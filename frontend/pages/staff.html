@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIMPS - Cổng Điều Phối CSVC & Kỹ Thuật</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/staff.css">
+</head>
+<body>
+
+  <div class="staff-layout">
+    <!-- SIDEBAR -->
+    <aside class="staff-sidebar">
+      <div class="brand">
+        <img src="../assets/img/logo.svg" alt="SIMPS Logo">
+        <div>
+          <div class="brand-title">SIMPS KỸ THUẬT</div>
+          <div class="brand-sub">Điều Phối & Bảo Trì</div>
+        </div>
+      </div>
+
+      <nav class="staff-nav">
+        <div class="nav-category">Hàng Đợi Xử Lý</div>
+        <a href="#queue" id="nav-queue" class="active" onclick="switchNav('queue')">
+          <span>⚡</span> Hàng Đợi Ưu Tiên (Core)
+        </a>
+        <a href="#all" id="nav-all" onclick="switchNav('all')">
+          <span>📋</span> Toàn Bộ Sự Cố
+        </a>
+
+        <div class="nav-category">Tác Vụ Kỹ Thuật</div>
+        <a href="#my-tasks" id="nav-my-tasks" onclick="filterMyTasks()">
+          <span>👤</span> Việc Được Giao Cho Tôi
+        </a>
+      </nav>
+
+      <div style="padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.775rem; color: #64748b;">
+        <div style="color: #cbd5e1; font-weight: 700; margin-bottom: 0.25rem;">Thuật toán SIMPS v1.0</div>
+        Tự động cân bằng thời gian chờ & mức độ khẩn cấp.
+      </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="staff-main">
+      <!-- TOPBAR -->
+      <header class="staff-topbar">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;" id="page-heading">
+            Hàng Đợi Xử Lý Sự Cố Theo Thứ Tự Ưu Tiên
+          </h2>
+          <span class="badge" style="background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;">
+            ● Thuật toán hoạt động
+          </span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1.25rem;">
+          <!-- Notification Bell -->
+          <div id="notification-bell-container"></div>
+
+          <div style="text-align: right;">
+            <div id="staff-name" style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">Đang tải...</div>
+            <div style="font-size: 0.75rem; color: #64748b;">Kỹ Thuật Viên Cơ Sở Vật Chất</div>
+          </div>
+          <button id="logout-btn" class="btn btn-outline btn-sm">Đăng xuất</button>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <main class="staff-content">
+
+        <!-- BANNER CẢNH BÁO AN TOÀN ĐẶC BIỆT (EMERGENCY OVERRIDE) -->
+        <div id="emergency-alert" class="emergency-banner" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 1.25rem;">
+            <div style="font-size: 2.5rem; animation: floatSlow 2s ease-in-out infinite;">🚨</div>
+            <div>
+              <div class="emergency-tag">Safety Override Active</div>
+              <div style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.01em;">CẢNH BÁO: CÓ SỰ CỐ AN TOÀN ĐẶC BIỆT CẦN XỬ LÝ NGAY!</div>
+              <div id="emergency-count-text" style="font-size: 0.9rem; opacity: 0.95; margin-top: 0.2rem;">
+                Phát hiện sự cố rủi ro nguy hiểm đến tính mạng/học đường được hệ thống tự động đẩy lên mức Khẩn cấp.
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-lg" style="background: #ffffff; color: #b91c1c; font-weight: 800; box-shadow: 0 4px 12px rgba(0,0,0,0.2);" onclick="filterEmergency()">
+            Xử Lý Ngay ➜
+          </button>
+        </div>
+
+        <!-- THỐNG KÊ NHANH -->
+        <div class="stats-overview-grid">
+          <div class="stat-card stat-card-danger">
+            <div class="stat-label">Khẩn Cấp (Emergency)</div>
+            <div class="stat-value" id="count-emergency" style="color: #dc2626;">0</div>
+          </div>
+          <div class="stat-card stat-card-warning">
+            <div class="stat-label">Cấp Bách (Urgent)</div>
+            <div class="stat-value" id="count-urgent" style="color: #d97706;">0</div>
+          </div>
+          <div class="stat-card" style="border-top: 4px solid #eab308;">
+            <div class="stat-label">Ưu Tiên Cao (High)</div>
+            <div class="stat-value" id="count-high">0</div>
+          </div>
+          <div class="stat-card stat-card-success">
+            <div class="stat-label">Đang Tiến Hành Sửa</div>
+            <div class="stat-value" id="count-in-progress" style="color: #059669;">0</div>
+          </div>
+        </div>
+
+        <!-- BIỂU ĐỒ PHÂN BỔ CÔNG VIỆC THEO CHUYÊN MÔN KỸ THUẬT -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <div class="card-header" style="cursor: pointer;" onclick="toggleChartSection()">
+            <div>
+              <h3 class="card-title" style="display: flex; align-items: center; gap: 8px;">
+                <span>📊</span> Phân Bổ Công Việc Cần Xử Lý Theo Chuyên Môn / Thiết Bị
+              </h3>
+              <p style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">
+                Khối lượng sự cố đang mở cần kỹ thuật viên chuyên ngành (Điện, Nước, Máy tính, Bàn ghế...)
+              </p>
+            </div>
+            <button class="btn btn-xs btn-outline" id="btn-toggle-chart" type="button">Thu gọn ▲</button>
+          </div>
+          <div class="card-body" id="chart-section-body" style="padding-top: 0.5rem;">
+            <div style="height: 220px; position: relative;">
+              <canvas id="chart-staff-categories"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- BỘ LỌC TƯƠNG TÁC ĐA TIÊU CHÍ -->
+        <div class="filter-card">
+          <!-- Hàng 1: Ưu tiên chips & Tìm kiếm -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+            <div class="filter-chips-row">
+              <span style="font-size: 0.8rem; font-weight: 700; color: #64748b; margin-right: 0.25rem;">Ưu tiên:</span>
+              <button class="filter-chip-btn active" onclick="setPriorityFilter('', this)">Tất cả</button>
+              <button class="filter-chip-btn" onclick="setPriorityFilter('emergency', this)">🚨 Khẩn cấp</button>
+              <button class="filter-chip-btn" onclick="setPriorityFilter('urgent', this)">⚠️ Cấp bách</button>
+              <button class="filter-chip-btn" onclick="setPriorityFilter('high', this)">⚡ Ưu tiên cao</button>
+              <button class="filter-chip-btn" onclick="setPriorityFilter('normal', this)">ℹ️ Bình thường</button>
+            </div>
+
+            <div style="min-width: 280px; flex: 1; max-width: 400px;">
+              <input type="text" id="search-input" class="form-control" placeholder="🔍 Tìm theo mã (#12), tên sự cố, vị trí..." oninput="handleSearch(this.value)">
+            </div>
+          </div>
+
+          <!-- Hàng 2: Các bộ lọc chuyên sâu -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; align-items: end;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-size: 0.775rem;">Chuyên môn / Loại sự cố</label>
+              <select id="filter-type" class="form-control" onchange="loadIncidents()">
+                <option value="">Tất cả danh mục</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-size: 0.775rem;">Khu vực / Tòa nhà</label>
+              <select id="filter-building" class="form-control" onchange="loadIncidents()">
+                <option value="">Tất cả khu vực</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-size: 0.775rem;">Phân công trách nhiệm</label>
+              <select id="filter-assignment" class="form-control" onchange="loadIncidents()">
+                <option value="">Tất cả sự cố</option>
+                <option value="unassigned">⚡ Chưa ai nhận (Việc mới)</option>
+                <option value="my_tasks">👤 Việc được giao cho tôi</option>
+                <option value="others">👥 Việc của kỹ thuật khác</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-size: 0.775rem;">Lọc trạng thái</label>
+              <select id="filter-status" class="form-control" onchange="loadIncidents()">
+                <option value="">Tất cả trạng thái mở</option>
+                <option value="reported">Mới báo cáo (Chưa nhận)</option>
+                <option value="received">Đã tiếp nhận</option>
+                <option value="assigned">Đã phân công</option>
+                <option value="in_progress">Đang xử lý</option>
+                <option value="resolved">Đã sửa xong</option>
+                <option value="closed">Đã đóng hoàn tất</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-size: 0.775rem;">Sắp xếp kết quả</label>
+              <select id="sort-by" class="form-control" onchange="loadIncidents()">
+                <option value="priority_score" selected>⭐ Điểm ưu tiên P (Cao → Thấp)</option>
+                <option value="reported_at">🕒 Thời gian báo cáo (Mới nhất)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Hàng 3: Toggle quá hạn & Counter -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--surface-border); flex-wrap: wrap; gap: 0.75rem;">
+            <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 700; color: #b91c1c;">
+              <input type="checkbox" id="toggle-overdue" style="width: 17px; height: 17px; accent-color: #dc2626;" onchange="loadIncidents()">
+              <span>⚠️ Chỉ hiển thị sự cố trễ hạn (> 72h chưa xử lý)</span>
+            </label>
+
+            <div style="font-size: 0.825rem; color: #64748b;">
+              Đang hiển thị: <strong id="staff-visible-count" style="color: #0f172a;">0</strong> sự cố
+            </div>
+          </div>
+        </div>
+
+        <!-- BẢNG HÀNG ĐỢI SỰ CỐ -->
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">Mã</th>
+                  <th style="width: 150px;">Mức Ưu Tiên</th>
+                  <th>Tiêu đề sự cố</th>
+                  <th>Vị trí</th>
+                  <th>Loại</th>
+                  <th>Thời gian chờ</th>
+                  <th>Người phụ trách</th>
+                  <th>Trạng thái</th>
+                  <th style="width: 120px; text-align: center;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="staff-table-body">
+                <tr>
+                  <td colspan="9" class="text-center" style="padding: 2.5rem; color: #64748b;">
+                    Đang tải danh sách hàng đợi ưu tiên...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/components/toast.js"></script>
+  <script src="../js/components/modal.js"></script>
+  <script src="../js/components/chart.js"></script>
+  <script src="../js/components/notifications.js"></script>
+
+  <script>
+    const user = AuthService.checkAuth(['staff', 'admin']);
+    if (user) {
+      document.getElementById('staff-name').textContent = user.full_name;
+      // Khởi tạo hệ thống thông báo thời gian thực
+      window.notifManager = new NotificationManager({
+        containerId: 'notification-bell-container'
+      });
+    }
+    document.getElementById('logout-btn').addEventListener('click', () => AuthService.logout());
+
+    let currentNav = 'queue';
+    let staffMembers = [];
+    let allFetchedItems = [];
+    let selectedPriority = '';
+    let isChartCollapsed = false;
+
+    function toggleChartSection() {
+      const body = document.getElementById('chart-section-body');
+      const btn = document.getElementById('btn-toggle-chart');
+      isChartCollapsed = !isChartCollapsed;
+      body.style.display = isChartCollapsed ? 'none' : 'block';
+      btn.textContent = isChartCollapsed ? 'Mở rộng ▼' : 'Thu gọn ▲';
+    }
+
+    function switchNav(nav) {
+      currentNav = nav;
+      document.getElementById('nav-queue').classList.toggle('active', nav === 'queue');
+      document.getElementById('nav-all').classList.toggle('active', nav === 'all');
+      document.getElementById('page-heading').textContent = nav === 'queue' 
+        ? 'Hàng Đợi Xử Lý Sự Cố Theo Thứ Tự Ưu Tiên' 
+        : 'Toàn Bộ Sự Cố Trong Hệ Thống';
+      
+      if (nav === 'all') {
+        document.getElementById('filter-status').value = '';
+      }
+      loadIncidents();
+    }
+
+    function setPriorityFilter(p, btn) {
+      selectedPriority = p;
+      document.querySelectorAll('.filter-chips-row .filter-chip-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadIncidents();
+    }
+
+    function filterEmergency() {
+      selectedPriority = 'emergency';
+      document.querySelectorAll('.filter-chips-row .filter-chip-btn').forEach(b => {
+        b.classList.toggle('active', b.textContent.includes('Khẩn cấp'));
+      });
+      loadIncidents();
+    }
+
+    function filterMyTasks() {
+      if (!user) return;
+      document.getElementById('filter-assignment').value = 'my_tasks';
+      loadIncidents();
+      Toast.info('Đang lọc danh sách sự cố được giao cho bạn.');
+    }
+
+    let searchTimeout = null;
+    function handleSearch(term) {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        loadIncidents();
+      }, 300);
+    }
+
+    async function loadFilterDropdowns() {
+      try {
+        const [typesRes, locsRes] = await Promise.all([
+          ApiService.getIncidentTypes(),
+          ApiService.getLocations()
+        ]);
+
+        // 1. Types
+        const typeSelect = document.getElementById('filter-type');
+        typesRes.data.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.id;
+          opt.textContent = `${t.name} ${t.is_safety_critical ? '🚨' : ''}`;
+          typeSelect.appendChild(opt);
+        });
+
+        // 2. Buildings
+        const buildingSelect = document.getElementById('filter-building');
+        const buildings = Array.from(new Set(locsRes.data.map(l => l.building).filter(Boolean)));
+        buildings.sort().forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b;
+          opt.textContent = `Khu vực ${b}`;
+          buildingSelect.appendChild(opt);
+        });
+      } catch (err) {
+        console.error('Lỗi nạp bộ lọc:', err);
+      }
+    }
+
+    async function loadStaffList() {
+      try {
+        const res = await ApiService.getUsers({ role: 'staff' });
+        staffMembers = res.data || [];
+      } catch (err) {
+        console.error('Lỗi tải nhân viên:', err);
+      }
+    }
+
+    async function loadIncidents() {
+      const tbody = document.getElementById('staff-table-body');
+      tbody.innerHTML = '<tr><td colspan="9" class="text-center" style="padding: 2.5rem; color: #64748b;">Đang tải danh sách hàng đợi ưu tiên...</td></tr>';
+
+      const status = document.getElementById('filter-status').value;
+      const sortBy = document.getElementById('sort-by').value;
+      const typeId = document.getElementById('filter-type').value;
+      const building = document.getElementById('filter-building').value;
+      const assignment = document.getElementById('filter-assignment').value;
+      const isOverdue = document.getElementById('toggle-overdue').checked;
+      const search = (document.getElementById('search-input').value || '').trim();
+
+      // Assigned query logic
+      let assignedToParam = undefined;
+      if (assignment === 'unassigned') {
+        assignedToParam = -1;
+      } else if (assignment === 'my_tasks' && user) {
+        assignedToParam = user.id;
+      }
+
+      try {
+        const queryParams = {
+          status: status || undefined,
+          priority_level: selectedPriority || undefined,
+          type_id: typeId || undefined,
+          building: building || undefined,
+          assigned_to: assignedToParam,
+          overdue_only: isOverdue ? true : undefined,
+          search: search || undefined,
+          sort_by: sortBy,
+          sort_order: 'desc',
+          page_size: 100
+        };
+
+        const res = await ApiService.getIncidents(queryParams);
+        let items = res.data.items || [];
+
+        // Client filter for "others" if selected
+        if (assignment === 'others' && user) {
+          items = items.filter(i => i.assigned_to && i.assigned_to !== user.id);
+        }
+
+        allFetchedItems = items;
+
+        // Count stats
+        const emergencyCount = allFetchedItems.filter(i => i.priority_level === 'emergency' && !['resolved', 'confirmed', 'closed'].includes(i.status)).length;
+        const urgentCount = allFetchedItems.filter(i => i.priority_level === 'urgent' && !['resolved', 'confirmed', 'closed'].includes(i.status)).length;
+        const highCount = allFetchedItems.filter(i => i.priority_level === 'high' && !['resolved', 'confirmed', 'closed'].includes(i.status)).length;
+        const inProgressCount = allFetchedItems.filter(i => i.status === 'in_progress').length;
+
+        document.getElementById('count-emergency').textContent = emergencyCount;
+        document.getElementById('count-urgent').textContent = urgentCount;
+        document.getElementById('count-high').textContent = highCount;
+        document.getElementById('count-in-progress').textContent = inProgressCount;
+        document.getElementById('staff-visible-count').textContent = allFetchedItems.length;
+
+        // Emergency banner
+        const alertBanner = document.getElementById('emergency-alert');
+        if (emergencyCount > 0) {
+          alertBanner.style.display = 'flex';
+          document.getElementById('emergency-count-text').textContent = 
+            `Hiện có ${emergencyCount} sự cố an toàn đặc biệt (Safety Override) cần giải quyết ngay lập tức.`;
+        } else {
+          alertBanner.style.display = 'none';
+        }
+
+        renderTableRows(allFetchedItems);
+        renderCategoryChart(allFetchedItems);
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center text-danger" style="padding: 2rem;">Lỗi tải dữ liệu: ${err.message}</td></tr>`;
+      }
+    }
+
+    // Vẽ biểu đồ phân bổ sự cố theo chuyên môn
+    function renderCategoryChart(items) {
+      if (!items || items.length === 0) return;
+      const countsByType = {};
+      items.forEach(i => {
+        const t = i.type_name || 'Khác';
+        countsByType[t] = (countsByType[t] || 0) + 1;
+      });
+
+      const sortedTypes = Object.keys(countsByType).sort((a, b) => countsByType[b] - countsByType[a]).slice(0, 7);
+      const counts = sortedTypes.map(t => countsByType[t]);
+
+      SimpleChart.drawBarChart('chart-staff-categories', sortedTypes, counts, { color: '#0284c7' });
+    }
+
+    function renderTableRows(items) {
+      const tbody = document.getElementById('staff-table-body');
+      if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center" style="padding: 3rem; color: #64748b;">Không có sự cố nào phù hợp.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = items.map(inc => {
+        let isEmergency = inc.priority_level === 'emergency';
+        let rowBg = isEmergency ? 'background-color: #fef2f2;' : '';
+
+        return `
+          <tr style="${rowBg}">
+            <td><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${inc.id}</span></td>
+            <td>
+              <div class="priority-score-cell">
+                ${Utils.renderPriorityBadge(inc.priority_level, inc.priority_score)}
+              </div>
+            </td>
+            <td>
+              <div style="font-weight: 700; color: #0f172a;">${Utils.escapeHtml(inc.title)}</div>
+              <div style="font-size: 0.8rem; color: #64748b;">${Utils.escapeHtml(inc.description || '')}</div>
+            </td>
+            <td><strong>${inc.location_name || '--'}</strong></td>
+            <td>${inc.type_name || '--'}</td>
+            <td><span style="color: #64748b; font-size: 0.825rem;">${Utils.formatDateTime(inc.reported_at)}</span></td>
+            <td>
+              ${inc.assignee_name 
+                ? `<span class="badge" style="background:#e0e7ff; color:#3730a3;">👤 ${Utils.escapeHtml(inc.assignee_name)}</span>` 
+                : '<span style="color:#94a3b8; font-size:0.8rem;">Chưa phân công</span>'}
+            </td>
+            <td>${Utils.renderStatusBadge(inc.status)}</td>
+            <td style="text-align: center;">
+              <button class="btn btn-xs btn-primary" onclick="openActionModal(${inc.id})">
+                ⚙️ Thao tác
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Modal action
+    async function openActionModal(id) {
+      try {
+        const res = await ApiService.getIncidentById(id);
+        const inc = res.data;
+
+        let staffOptions = staffMembers.map(s => 
+          `<option value="${s.id}" ${inc.assigned_to === s.id ? 'selected' : ''}>${s.full_name}</option>`
+        ).join('');
+
+        const content = `
+          <div>
+            <div style="margin-bottom: 1.25rem;">
+              <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin-bottom: 0.4rem;">
+                #${inc.id} • ${Utils.escapeHtml(inc.title)}
+              </h3>
+              <div style="display:flex; gap: 8px;">
+                ${Utils.renderPriorityBadge(inc.priority_level, inc.priority_score)}
+                ${Utils.renderStatusBadge(inc.status)}
+              </div>
+            </div>
+
+            <div style="background: var(--surface-muted); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; font-size: 0.875rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+              <div><strong>📍 Địa điểm:</strong> ${inc.location_name}</div>
+              <div><strong>🏷️ Danh mục:</strong> ${inc.type_name}</div>
+              <div><strong>⚠️ Mức nghiêm trọng (S):</strong> ${inc.severity}/5</div>
+              <div><strong>👥 Người bị ảnh hưởng:</strong> ${inc.people_affected} người</div>
+            </div>
+
+            <form id="action-form">
+              <div class="form-group">
+                <label class="form-label">Cập nhật trạng thái quy trình</label>
+                <select id="modal-status" class="form-control">
+                  <option value="received" ${inc.status === 'received' ? 'selected' : ''}>📥 Đã tiếp nhận (Received)</option>
+                  <option value="assigned" ${inc.status === 'assigned' ? 'selected' : ''}>👤 Đã phân công (Assigned)</option>
+                  <option value="in_progress" ${inc.status === 'in_progress' ? 'selected' : ''}>⚙️ Đang tiến hành xử lý (In Progress)</option>
+                  <option value="resolved" ${inc.status === 'resolved' ? 'selected' : ''}>🔧 Đã khắc phục hoàn thành (Resolved)</option>
+                  <option value="closed" ${inc.status === 'closed' ? 'selected' : ''}>🔒 Đóng sự cố (Closed)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Chỉ định kỹ thuật viên phụ trách</label>
+                <select id="modal-assignee" class="form-control">
+                  <option value="">-- Chọn kỹ thuật viên --</option>
+                  ${staffOptions}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Ghi chú giải pháp / Vật tư thay thế</label>
+                <textarea id="modal-notes" class="form-control" rows="3" placeholder="Ghi chú nguyên nhân, thiết bị thay mới, hướng dẫn an toàn...">${Utils.escapeHtml(inc.resolution_notes || '')}</textarea>
+              </div>
+            </form>
+          </div>
+        `;
+
+        Modal.open({
+          title: `Cập nhật tiến độ #${inc.id}`,
+          content: content,
+          confirmText: 'Lưu Tiến Trình',
+          cancelText: 'Hủy',
+          onConfirm: async (close) => {
+            const newStatus = document.getElementById('modal-status').value;
+            const assigneeId = document.getElementById('modal-assignee').value;
+            const notes = document.getElementById('modal-notes').value.trim();
+
+            try {
+              if (assigneeId && parseInt(assigneeId) !== inc.assigned_to) {
+                await ApiService.assignIncident(inc.id, parseInt(assigneeId));
+              }
+
+              await ApiService.updateIncidentStatus(inc.id, {
+                status: newStatus,
+                notes: notes || `Cập nhật sang ${newStatus}`,
+                resolution_notes: newStatus === 'resolved' ? notes : undefined
+              });
+
+              Toast.success('Đã cập nhật tiến độ sự cố thành công!');
+              close();
+              loadIncidents();
+            } catch (err) {
+              Toast.error(err.message || 'Lỗi cập nhật');
+            }
+          }
+        });
+
+      } catch (err) {
+        Toast.error(err.message);
+      }
+    }
+
+    loadStaffList();
+    loadFilterDropdowns();
+    loadIncidents();
+  </script>
+</body>
+</html>

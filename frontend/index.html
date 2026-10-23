@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIMPS - Hệ Thống Quản Lý & Ưu Tiên Sự Cố Trường Học</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body class="login-body">
+
+  <div class="login-wrapper">
+    <!-- CỘT BÊN TRÁI: THƯƠNG HIỆU & GIÁ TRỊ KHOA HỌC -->
+    <div class="login-hero-col">
+      <div class="hero-brand">
+        <div class="hero-logo-box">
+          <img src="assets/img/logo.svg" alt="SIMPS Logo">
+        </div>
+        <div>
+          <div class="hero-brand-name">SIMPS • KHKT</div>
+          <div class="hero-tagline">Hệ Thống Quản Trị Học Đường</div>
+        </div>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-badge-pill">
+          <span>🏆</span> Đề Tài Nghiên Cứu Khoa Học Kỹ Thuật Lớp 10
+        </div>
+        <h1 class="hero-title">
+          Tối ưu hóa quy trình xử lý sự cố học đường bằng <span>Thuật Toán Đa Tiêu Chí</span>
+        </h1>
+        <p class="hero-desc">
+          Xác định thứ tự ưu tiên minh bạch dựa trên mức độ nghiêm trọng, số người ảnh hưởng, mức rủi ro khu vực, thời gian chờ và tác động giảng dạy.
+        </p>
+
+        <div class="hero-features">
+          <div class="hero-feature-item">
+            <div class="hero-feature-icon">⚡</div>
+            <div class="hero-feature-text">
+              <strong>Thuật Toán Tuyến Tính Trọng Số</strong>
+              <span>Công thức P = w₁S + w₂I + w₃R + w₄T + w₅E xác lập khách quan qua khảo sát.</span>
+            </div>
+          </div>
+
+          <div class="hero-feature-item">
+            <div class="hero-feature-icon">🚨</div>
+            <div class="hero-feature-text">
+              <strong>Quy Tắc An Toàn Đặc Biệt (Safety Override)</strong>
+              <span>Tự động đẩy mức Khẩn cấp khi phát hiện rủi ro cao (chập điện, tai nạn).</span>
+            </div>
+          </div>
+
+          <div class="hero-feature-item">
+            <div class="hero-feature-icon">🛡️</div>
+            <div class="hero-feature-text">
+              <strong>100% Minh Bạch & Kiểm Chứng</strong>
+              <span>Không sử dụng AI tạo sinh ảo giác — kết quả có thể đo lường và chứng minh thực nghiệm.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-footer">
+        © 2026 SIMPS Project • Phần mềm hệ thống phục vụ chuyển đổi số giáo dục.
+      </div>
+    </div>
+
+    <!-- CỘT BÊN PHẢI: FORM ĐĂNG NHẬP -->
+    <div class="login-form-col">
+      <div class="login-form-container">
+        
+        <div class="login-card-header">
+          <h2 class="login-welcome">Đăng Nhập Hệ Thống 👋</h2>
+          <p class="login-sub">Chọn vai trò hoặc nhập thông tin tài khoản được cấp</p>
+        </div>
+
+        <!-- Phím chọn nhanh tài khoản kiểm thử -->
+        <div>
+          <div class="quick-fill-label">
+            <span>⚡</span> Nhấn để thử nghiệm nhanh các vai trò:
+          </div>
+          <div class="quick-fill-chips">
+            <div class="quick-chip" onclick="quickFill('hs01', '123456')">
+              <span class="quick-chip-role">🎓 Học Sinh</span>
+              <span class="quick-chip-user">hs01</span>
+            </div>
+            <div class="quick-chip" onclick="quickFill('nhanvien_dien', '123456')">
+              <span class="quick-chip-role">🔧 Kỹ Thuật CSVC</span>
+              <span class="quick-chip-user">nhanvien_dien</span>
+            </div>
+            <div class="quick-chip" onclick="quickFill('admin', 'admin123')">
+              <span class="quick-chip-role">👔 Quản Trị Viên</span>
+              <span class="quick-chip-user">admin</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="login-form" class="login-form">
+          <div class="form-group">
+            <label for="username" class="form-label">Tên đăng nhập</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="username" class="form-control input-with-icon" placeholder="Nhập username" required autofocus>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Mật khẩu</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="password" class="form-control input-with-icon" placeholder="Nhập mật khẩu" required>
+            </div>
+          </div>
+
+          <button type="submit" id="login-submit-btn" class="btn btn-primary btn-block btn-lg" style="margin-top: 1.5rem;">
+            <span>Đăng Nhập Ngay</span> ➜
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/components/toast.js"></script>
+
+  <script>
+    function quickFill(user, pass) {
+      document.getElementById('username').value = user;
+      document.getElementById('password').value = pass;
+      Toast.info(`Đã điền tài khoản: ${user}`);
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('login-submit-btn');
+
+      if (!username || !password) {
+        Toast.warning('Vui lòng điền đầy đủ thông tin đăng nhập');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>Đang xác thực thông tin...</span>';
+
+      try {
+        await AuthService.login(username, password);
+        Toast.success('Đăng nhập thành công! Đang chuyển hướng...');
+      } catch (err) {
+        Toast.error(err.message || 'Tên đăng nhập hoặc mật khẩu không chính xác');
+        btn.disabled = false;
+        btn.innerHTML = '<span>Đăng Nhập Ngay</span> ➜';
+      }
+    });
+
+    // Tự động chuyển hướng nếu phiên còn hiệu lực
+    const currentUser = AuthService.getUser();
+    if (currentUser && ApiService.getToken()) {
+      AuthService.redirectByRole(currentUser.role);
+    }
+  </script>
+</body>
+</html>

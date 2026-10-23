@@ -1,0 +1,226 @@
+/* ==========================================================================
+   SIMPS STAFF COMMAND CENTER 2.0
+   Giao diện Nhân viên Kỹ thuật & Cơ sở vật chất
+   ========================================================================== */
+
+.staff-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+/* SIDEBAR */
+.staff-sidebar {
+  width: var(--sidebar-w);
+  background: #0f172a;
+  color: #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 40;
+  border-right: 1px solid #1e293b;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.staff-sidebar .brand {
+  padding: 1.5rem 1.5rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.staff-sidebar .brand img {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+.staff-sidebar .brand-title {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.staff-sidebar .brand-sub {
+  font-size: 0.725rem;
+  color: #38bdf8;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.staff-nav {
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.nav-category {
+  font-size: 0.725rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  padding: 0.75rem 0.75rem 0.35rem;
+}
+
+.staff-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all var(--anim-fast);
+}
+
+.staff-nav a:hover {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+.staff-nav a.active {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-700) 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px var(--primary-glow);
+}
+
+/* MAIN CONTENT */
+.staff-main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.staff-topbar {
+  height: 70px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.staff-content {
+  padding: 2rem;
+  flex: 1;
+  max-width: 1400px;
+}
+
+/* EMERGENCY TICKER BANNER */
+.emergency-banner {
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  color: #ffffff;
+  padding: 1.25rem 1.75rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.35);
+  animation: pulseGlow 2s infinite;
+}
+
+.emergency-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+/* FILTER BAR */
+.filter-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filter-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filter-chip-btn {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.825rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  border: 1px solid var(--surface-border);
+  cursor: pointer;
+  transition: all var(--anim-fast);
+}
+
+.filter-chip-btn:hover {
+  background: #e2e8f0;
+  color: var(--text-main);
+}
+
+.filter-chip-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+/* PRIORITY SCORE GAUGE IN TABLE */
+.priority-score-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.score-num {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.score-bar-bg {
+  flex: 1;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  max-width: 60px;
+}
+
+.score-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+}

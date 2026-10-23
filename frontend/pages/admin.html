@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIMPS - Bảng Quản Trị & Trung Tâm Phân Tích</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+      <div class="brand">
+        <img src="../assets/img/logo.svg" alt="SIMPS Logo">
+        <div>
+          <div class="brand-title">SIMPS QUẢN TRỊ</div>
+          <div class="brand-sub">Ban Quản Lý & KHKT</div>
+        </div>
+      </div>
+
+      <nav class="admin-nav">
+        <div class="admin-nav-category">Giám Sát & Thống Kê</div>
+        <a href="#dashboard" id="nav-dashboard" class="active" onclick="switchAdminTab('dashboard')">
+          <span>📊</span> Bảng Điều Khiển & Biểu Đồ
+        </a>
+        <a href="#incidents" id="nav-incidents" onclick="switchAdminTab('incidents')">
+          <span>📋</span> Toàn Bộ Sự Cố Học Đường
+        </a>
+
+        <div class="admin-nav-category">Khoa Học & Thuật Toán</div>
+        <a href="#weights" id="nav-weights" onclick="switchAdminTab('weights')">
+          <span>⚙️</span> Trọng Số & Bộ Giả Lập P
+        </a>
+
+        <div class="admin-nav-category">Danh Mục Cơ Sở</div>
+        <a href="#locations" id="nav-locations" onclick="switchAdminTab('locations')">
+          <span>🏫</span> Địa Điểm & Mức Rủi Ro
+        </a>
+        <a href="#types" id="nav-types" onclick="switchAdminTab('types')">
+          <span>🏷️</span> Loại Sự Cố & An Toàn
+        </a>
+        <a href="#users" id="nav-users" onclick="switchAdminTab('users')">
+          <span>👥</span> Tài Khoản Người Dùng
+        </a>
+      </nav>
+
+      <div style="padding: 1.5rem; font-size: 0.775rem; color: #64748b; border-top: 1px solid rgba(255,255,255,0.08);">
+        <div style="color: #ffffff; font-weight: 700; margin-bottom: 0.25rem;">Nghiên cứu KHKT 2026</div>
+        Thuật toán đa tiêu chí không dùng AI.
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div>
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;" id="admin-header-title">
+            Báo Cáo Thống Kê & Phân Tích Sự Cố
+          </h2>
+          <span style="font-size: 0.8rem; color: #64748b;">Dữ liệu cập nhật theo thời gian thực</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1.25rem;">
+          <!-- Notification Bell -->
+          <div id="notification-bell-container"></div>
+
+          <div style="text-align: right;">
+            <div id="admin-user-name" style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">Admin</div>
+            <div style="font-size: 0.75rem; color: var(--primary); font-weight: 700;">Ban Giám Hiệu / Quản Trị</div>
+          </div>
+          <button id="admin-logout-btn" class="btn btn-outline btn-sm">Đăng xuất</button>
+        </div>
+      </header>
+
+      <main class="admin-content">
+
+        <!-- ================= SECTION 1: DASHBOARD & CHARTS ================= -->
+        <section id="sec-dashboard" class="admin-section">
+          <!-- KPI Cards -->
+          <div class="stats-overview-grid">
+            <div class="stat-card">
+              <div class="stat-label">Tổng Sự Cố Ghi Nhận</div>
+              <div class="stat-value" id="card-total">0</div>
+            </div>
+            <div class="stat-card stat-card-danger">
+              <div class="stat-label">Khẩn Cấp (Emergency)</div>
+              <div class="stat-value" id="card-emergency" style="color: #dc2626;">0</div>
+            </div>
+            <div class="stat-card stat-card-warning">
+              <div class="stat-label">Sự Cố Quá Hạn (> 72h)</div>
+              <div class="stat-value" id="card-overdue" style="color: #d97706;">0</div>
+            </div>
+            <div class="stat-card stat-card-success">
+              <div class="stat-label">Đã Khắc Phục Xong</div>
+              <div class="stat-value" id="card-resolved" style="color: #059669;">0</div>
+            </div>
+          </div>
+
+          <!-- Charts Grid -->
+          <div class="charts-grid">
+            <!-- Chart 1: Donut theo loại -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Phân Bổ Theo Danh Mục Hư Hỏng</div>
+                  <div style="font-size: 0.8rem; color: #64748b;">Tỷ lệ phần trăm các loại sự cố phổ biến</div>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chart-by-type"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 2: Cột theo địa điểm -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Điểm Nóng Thường Xuyên Phát Sinh</div>
+                  <div style="font-size: 0.8rem; color: #64748b;">Top các phòng học & khu vực cần bảo trì</div>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chart-by-location"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 3: Xu hướng thời gian -->
+            <div class="chart-card" style="grid-column: 1 / -1;">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Tần Suất Phát Sinh Sự Cố Theo Tháng</div>
+                  <div style="font-size: 0.8rem; color: #64748b;">Biểu đồ chuỗi thời gian phục vụ dự báo bảo dưỡng định kỳ</div>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chart-by-month"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 4: Thời gian xử lý trung bình theo Mức Ưu Tiên -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Thời Gian Giải Quyết Trung Bình Theo Mức Ưu Tiên (Giờ)</div>
+                  <div style="font-size: 0.8rem; color: #64748b;">Đo lường thời gian từ lúc báo cáo đến khi hoàn tất</div>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chart-resolution-time"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 5: Hiệu suất kỹ thuật viên -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">Hiệu Suất Xử Lý Theo Kỹ Thuật Viên CSVC</div>
+                  <div style="font-size: 0.8rem; color: #64748b;">So sánh số sự cố Đang xử lý vs Đã hoàn thành</div>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="chart-staff-performance"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= SECTION 2: TOÀN BỘ SỰ CỐ ================= -->
+        <section id="sec-incidents" class="admin-section" style="display: none;">
+          <!-- BỘ LỌC ĐA NĂNG TOÀN DIỆN -->
+          <div class="filter-card" style="background: #ffffff; border: 1px solid var(--surface-border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+              <div style="flex: 1; min-width: 280px; max-width: 480px;">
+                <input type="text" id="admin-search" class="form-control" placeholder="🔍 Tìm theo mã (#12), tiêu đề, tên người báo, địa điểm..." oninput="debounceAdminIncidents()">
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <button class="btn btn-secondary btn-sm" onclick="resetAdminFilters()">
+                  <span>↺ Đặt lại bộ lọc</span>
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="exportIncidentsToCSV()" style="background: #16a34a; border-color: #16a34a;">
+                  <span>📥 Xuất File Excel / CSV</span>
+                </button>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem;">
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="font-size: 0.75rem;">Mức Ưu Tiên</label>
+                <select id="admin-filter-priority" class="form-control" onchange="loadAllIncidents()">
+                  <option value="">Tất cả mức</option>
+                  <option value="emergency">🚨 Khẩn cấp</option>
+                  <option value="urgent">⚠️ Cấp bách</option>
+                  <option value="high">⚡ Ưu tiên cao</option>
+                  <option value="normal">ℹ️ Bình thường</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="font-size: 0.75rem;">Trạng Thái Tiến Trình</label>
+                <select id="admin-filter-status" class="form-control" onchange="loadAllIncidents()">
+                  <option value="">Tất cả trạng thái</option>
+                  <option value="reported">Mới báo cáo</option>
+                  <option value="received">Đã tiếp nhận</option>
+                  <option value="assigned">Đã phân công</option>
+                  <option value="in_progress">Đang sửa chữa</option>
+                  <option value="resolved">Đã khắc phục</option>
+                  <option value="confirmed">Đã xác nhận</option>
+                  <option value="closed">Đã đóng</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="font-size: 0.75rem;">Loại Sự Cố</label>
+                <select id="admin-filter-type" class="form-control" onchange="loadAllIncidents()">
+                  <option value="">Tất cả loại</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="font-size: 0.75rem;">Khu Vực / Tòa Nhà</label>
+                <select id="admin-filter-building" class="form-control" onchange="loadAllIncidents()">
+                  <option value="">Tất cả khu vực</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="font-size: 0.75rem;">Kỹ Thuật Phụ Trách</label>
+                <select id="admin-filter-assignee" class="form-control" onchange="loadAllIncidents()">
+                  <option value="">Tất cả nhân sự</option>
+                  <option value="-1">Chưa phân công</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" style="font-size: 0.75rem;">Sắp Xếp</label>
+                <select id="admin-sort-by" class="form-control" onchange="loadAllIncidents()">
+                  <option value="priority_score" selected>⭐ Điểm P giảm dần</option>
+                  <option value="reported_at">🕒 Ngày báo cáo mới nhất</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--surface-border); flex-wrap: wrap; gap: 0.75rem;">
+              <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.825rem; font-weight: 700; color: #dc2626;">
+                <input type="checkbox" id="admin-toggle-overdue" style="width: 17px; height: 17px; accent-color: #dc2626;" onchange="loadAllIncidents()">
+                <span>⚠️ Chỉ lọc sự cố quá hạn (> 72h)</span>
+              </label>
+
+              <div style="font-size: 0.825rem; color: #64748b;">
+                Tìm thấy: <strong id="admin-incidents-count" style="color: #0f172a;">0</strong> sự cố
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Cơ sở dữ liệu toàn bộ sự cố học đường</h3>
+              <button class="btn btn-sm btn-secondary" onclick="loadAllIncidents()">
+                <span>🔄 Làm mới</span>
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 60px;">Mã</th>
+                    <th style="width: 140px;">Mức Ưu Tiên</th>
+                    <th>Tiêu đề sự cố</th>
+                    <th>Địa điểm</th>
+                    <th>Loại</th>
+                    <th>Người báo cáo</th>
+                    <th>Phụ trách</th>
+                    <th>Trạng thái</th>
+                    <th>Thời gian</th>
+                    <th style="width: 100px; text-align: center;">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-incidents-tbody">
+                  <tr><td colspan="10" class="text-center" style="padding: 2.5rem; color: #64748b;">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= SECTION 3: CẤU HÌNH TRỌNG SỐ & BỘ GIẢ LẬP ================= -->
+        <section id="sec-weights" class="admin-section" style="display: none;">
+          <div style="max-width: 960px; margin: 0 auto;">
+            
+            <!-- FORMULA BANNER -->
+            <div class="formula-banner">
+              <div>
+                <span class="badge" style="background: rgba(255,255,255,0.15); color: #ffffff; border: 1px solid rgba(255,255,255,0.25);">
+                  Công Thức Xếp Hạng Tuyến Tính Đa Tiêu Chí
+                </span>
+                <div class="formula-display">P = w₁S + w₂I + w₃R + w₄T + w₅E</div>
+                <div style="font-size: 0.85rem; color: #c7d2fe; margin-top: 0.4rem;">
+                  Xác định thứ tự ưu tiên xử lý khách quan dựa trên trọng số xác lập từ khảo sát.
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <span id="weight-sum-badge" class="badge" style="background: #10b981; color: #ffffff; font-size: 0.95rem; padding: 0.5rem 1rem;">
+                  Tổng: <strong id="weight-sum-display">1.00</strong>
+                </span>
+              </div>
+            </div>
+
+            <!-- SLIDERS FORM -->
+            <form id="weights-form">
+              <!-- w1 -->
+              <div class="slider-group-card">
+                <div class="slider-header">
+                  <div>
+                    <strong>w₁: Mức độ nghiêm trọng của hư hỏng (Severity - S)</strong>
+                    <div style="font-size: 0.8rem; color: #64748b;">Thang điểm 1 đến 5 đánh giá mức độ hỏng hóc vật lý</div>
+                  </div>
+                  <span class="slider-val-badge" id="val-w1">0.30</span>
+                </div>
+                <input type="range" id="input-w1" min="0" max="1" step="0.05" value="0.30" oninput="updateWeightsUI()">
+              </div>
+
+              <!-- w2 -->
+              <div class="slider-group-card">
+                <div class="slider-header">
+                  <div>
+                    <strong>w₂: Số người bị ảnh hưởng (Impact - I)</strong>
+                    <div style="font-size: 0.8rem; color: #64748b;">Chuẩn hóa số người tiếp xúc về thang 1-5 (1 cá nhân → 200+ công cộng)</div>
+                  </div>
+                  <span class="slider-val-badge" id="val-w2">0.20</span>
+                </div>
+                <input type="range" id="input-w2" min="0" max="1" step="0.05" value="0.20" oninput="updateWeightsUI()">
+              </div>
+
+              <!-- w3 -->
+              <div class="slider-group-card">
+                <div class="slider-header">
+                  <div>
+                    <strong>w₃: Mức độ rủi ro của khu vực (Risk - R)</strong>
+                    <div style="font-size: 0.8rem; color: #64748b;">Mức độ an toàn của địa điểm (Phòng học thường = 2, Phòng Hóa/Điện = 5)</div>
+                  </div>
+                  <span class="slider-val-badge" id="val-w3">0.20</span>
+                </div>
+                <input type="range" id="input-w3" min="0" max="1" step="0.05" value="0.20" oninput="updateWeightsUI()">
+              </div>
+
+              <!-- w4 -->
+              <div class="slider-group-card">
+                <div class="slider-header">
+                  <div>
+                    <strong>w₄: Thời gian đã chờ xử lý (Time - T)</strong>
+                    <div style="font-size: 0.8rem; color: #64748b;">Sự cố tồn tại càng lâu càng tăng ưu tiên để chống bỏ sót</div>
+                  </div>
+                  <span class="slider-val-badge" id="val-w4">0.15</span>
+                </div>
+                <input type="range" id="input-w4" min="0" max="1" step="0.05" value="0.15" oninput="updateWeightsUI()">
+              </div>
+
+              <!-- w5 -->
+              <div class="slider-group-card">
+                <div class="slider-header">
+                  <div>
+                    <strong>w₅: Tác động đến dạy & học (Education - E)</strong>
+                    <div style="font-size: 0.8rem; color: #64748b;">Mức độ ảnh hưởng trực tiếp đến bài giảng và tiết học của giáo viên</div>
+                  </div>
+                  <span class="slider-val-badge" id="val-w5">0.15</span>
+                </div>
+                <input type="range" id="input-w5" min="0" max="1" step="0.05" value="0.15" oninput="updateWeightsUI()">
+              </div>
+
+              <!-- BỘ GIẢ LẬP TƯƠNG TÁC THỜI GIAN THỰC (REALTIME SIMULATOR) -->
+              <div class="simulator-box">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="font-size: 1.25rem;">🧪</span>
+                  <h4 style="font-size: 1.05rem; font-weight: 800; color: #0f172a; margin: 0;">Bộ Giả Lập Kiểm Chứng Điểm Ưu Tiên P Trực Tiếp</h4>
+                </div>
+                <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.35rem;">
+                  Kéo các giá trị giả định bên dưới để quan sát điểm P và mức ưu tiên tương ứng thay đổi ngay tức thì:
+                </p>
+
+                <div class="form-row" style="margin-top: 1rem;">
+                  <div class="form-group">
+                    <label class="form-label" style="font-size: 0.775rem;">S (Nghiêm trọng): <strong id="sim-s-val">3</strong></label>
+                    <input type="range" id="sim-s" min="1" max="5" value="3" oninput="runLiveSimulation()">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" style="font-size: 0.775rem;">I (Chuẩn hóa người): <strong id="sim-i-val">3</strong></label>
+                    <input type="range" id="sim-i" min="1" max="5" value="3" oninput="runLiveSimulation()">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" style="font-size: 0.775rem;">R (Rủi ro vị trí): <strong id="sim-r-val">2</strong></label>
+                    <input type="range" id="sim-r" min="1" max="5" value="2" oninput="runLiveSimulation()">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" style="font-size: 0.775rem;">T (Thời gian chờ): <strong id="sim-t-val">2</strong></label>
+                    <input type="range" id="sim-t" min="1" max="5" value="2" oninput="runLiveSimulation()">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" style="font-size: 0.775rem;">E (Tác động học): <strong id="sim-e-val">4</strong></label>
+                    <input type="range" id="sim-e" min="1" max="5" value="4" oninput="runLiveSimulation()">
+                  </div>
+                </div>
+
+                <div class="simulator-result">
+                  <div>
+                    <span style="font-size: 0.8rem; color: #64748b; font-weight: 700;">KẾT QUẢ TÍNH TOÁN:</span>
+                    <div style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 800; color: var(--primary);" id="sim-result-score">
+                      P = 2.80
+                    </div>
+                  </div>
+                  <div id="sim-result-badge">
+                    <span class="badge priority-high" style="font-size: 0.95rem; padding: 0.5rem 1rem;">⚡ ƯU TIÊN CAO</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- LƯU TRỌNG SỐ VÀ TÍNH LẠI CSDL -->
+              <div style="margin-top: 2rem;">
+                <button type="submit" id="save-weights-btn" class="btn btn-primary btn-block btn-lg">
+                  <span>💾 Áp Dụng Trọng Số Mới & Tính Lại Toàn Bộ CSDL Trường Học</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ================= SECTION 4: ĐỊA ĐIỂM ================= -->
+        <section id="sec-locations" class="admin-section" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Danh mục phòng học & khu vực chức năng</h3>
+              <button class="btn btn-sm btn-primary" onclick="openAddLocationModal()">➕ Thêm Địa Điểm</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Tên Khu Vực</th>
+                    <th>Tòa Nhà</th>
+                    <th>Tầng</th>
+                    <th>Mức Rủi Ro (R)</th>
+                    <th>Mô Tả</th>
+                  </tr>
+                </thead>
+                <tbody id="locations-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= SECTION 5: LOẠI SỰ CỐ ================= -->
+        <section id="sec-types" class="admin-section" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Danh mục loại sự cố & Quy tắc an toàn</h3>
+              <button class="btn btn-sm btn-primary" onclick="openAddTypeModal()">➕ Thêm Loại Sự Cố</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Tên Loại Sự Cố</th>
+                    <th>Nghiêm Trọng Mặc Định (S)</th>
+                    <th>Quy Tắc An Toàn (Safety Override)</th>
+                    <th>Mô Tả</th>
+                  </tr>
+                </thead>
+                <tbody id="types-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= SECTION 6: TÀI KHOẢN ================= -->
+        <section id="sec-users" class="admin-section" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Quản lý người dùng trong trường</h3>
+              <button class="btn btn-sm btn-primary" onclick="openAddUserModal()">➕ Thêm Người Dùng</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Tên Đăng Nhập</th>
+                    <th>Họ & Tên</th>
+                    <th>Vai Trò</th>
+                    <th>Lớp / Tổ CSVC</th>
+                    <th>Email</th>
+                    <th>Trạng Thái</th>
+                  </tr>
+                </thead>
+                <tbody id="users-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/components/toast.js"></script>
+  <script src="../js/components/modal.js"></script>
+  <script src="../js/components/chart.js"></script>
+  <script src="../js/components/notifications.js"></script>
+
+  <script>
+    const user = AuthService.checkAuth(['admin']);
+    if (user) {
+      document.getElementById('admin-user-name').textContent = user.full_name;
+      // Khởi tạo hệ thống chuông thông báo trực tiếp
+      window.notifManager = new NotificationManager({
+        containerId: 'notification-bell-container'
+      });
+    }
+    document.getElementById('admin-logout-btn').addEventListener('click', () => AuthService.logout());
+
+    // Chuyển Tab
+    function switchAdminTab(tab) {
+      const sections = ['dashboard', 'incidents', 'weights', 'locations', 'types', 'users'];
+      sections.forEach(s => {
+        document.getElementById(`sec-${s}`).style.display = s === tab ? 'block' : 'none';
+        const navEl = document.getElementById(`nav-${s}`);
+        if (navEl) navEl.classList.toggle('active', s === tab);
+      });
+
+      const titles = {
+        dashboard: 'Báo Cáo Thống Kê & Phân Tích Sự Cố',
+        incidents: 'Toàn Bộ Sự Cố Học Đường Trong Hệ Thống',
+        weights: 'Cấu Hình Trọng Số & Bộ Giả Lập Điểm P',
+        locations: 'Danh Mục Địa Điểm & Mức Rủi Ro Khu Vực',
+        types: 'Danh Mục Loại Sự Cố & Cơ Chế Ghi Đè An Toàn',
+        users: 'Quản Lý Tài Khoản Học Sinh, Nhân Viên & Quản Trị'
+      };
+      document.getElementById('admin-header-title').textContent = titles[tab] || '';
+
+      if (tab === 'dashboard') loadDashboardData();
+      if (tab === 'incidents') loadAllIncidents();
+      if (tab === 'weights') loadWeights();
+      if (tab === 'locations') loadLocations();
+      if (tab === 'types') loadTypes();
+      if (tab === 'users') loadUsers();
+    }
+
+    let lastFetchedAdminIncidents = [];
+    let adminSearchTimeout = null;
+    let adminFiltersLoaded = false;
+
+    function debounceAdminIncidents() {
+      clearTimeout(adminSearchTimeout);
+      adminSearchTimeout = setTimeout(() => {
+        loadAllIncidents();
+      }, 300);
+    }
+
+    function resetAdminFilters() {
+      document.getElementById('admin-search').value = '';
+      document.getElementById('admin-filter-priority').value = '';
+      document.getElementById('admin-filter-status').value = '';
+      document.getElementById('admin-filter-type').value = '';
+      document.getElementById('admin-filter-building').value = '';
+      document.getElementById('admin-filter-assignee').value = '';
+      document.getElementById('admin-sort-by').value = 'priority_score';
+      document.getElementById('admin-toggle-overdue').checked = false;
+      loadAllIncidents();
+    }
+
+    async function loadAdminFilterDropdowns() {
+      if (adminFiltersLoaded) return;
+      try {
+        const [typesRes, locsRes, staffRes] = await Promise.all([
+          ApiService.getIncidentTypes(),
+          ApiService.getLocations(),
+          ApiService.getUsers({ role: 'staff' })
+        ]);
+
+        // 1. Types
+        const typeSelect = document.getElementById('admin-filter-type');
+        typesRes.data.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.id;
+          opt.textContent = t.name;
+          typeSelect.appendChild(opt);
+        });
+
+        // 2. Buildings
+        const buildingSelect = document.getElementById('admin-filter-building');
+        const buildings = Array.from(new Set(locsRes.data.map(l => l.building).filter(Boolean))).sort();
+        buildings.forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b;
+          opt.textContent = `Khu vực ${b}`;
+          buildingSelect.appendChild(opt);
+        });
+
+        // 3. Staff members
+        const assigneeSelect = document.getElementById('admin-filter-assignee');
+        (staffRes.data || []).forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = `👤 ${s.full_name}`;
+          assigneeSelect.appendChild(opt);
+        });
+
+        adminFiltersLoaded = true;
+      } catch (err) {
+        console.error('Lỗi nạp bộ lọc admin:', err);
+      }
+    }
+
+    // 1. Dashboard
+    async function loadDashboardData() {
+      try {
+        const [overviewRes, typeStatsRes, locStatsRes, monthStatsRes, resTimeRes, staffStatsRes] = await Promise.all([
+          ApiService.getStatsOverview(),
+          ApiService.getStatsByType(),
+          ApiService.getStatsByLocation(),
+          ApiService.getStatsByMonth(),
+          ApiService.getAvgResolutionTime(),
+          ApiService.getStatsByStaff()
+        ]);
+
+        const o = overviewRes.data;
+        document.getElementById('card-total').textContent = o.total_incidents || 0;
+        document.getElementById('card-emergency').textContent = o.by_priority?.emergency || 0;
+        document.getElementById('card-overdue').textContent = o.overdue_count || 0;
+        document.getElementById('card-resolved').textContent = (o.by_status?.resolved || 0) + (o.by_status?.confirmed || 0);
+
+        // Chart 1: Donut Chart - Type
+        const typeLabels = typeStatsRes.data.slice(0, 6).map(t => t.type_name);
+        const typeData = typeStatsRes.data.slice(0, 6).map(t => t.incident_count);
+        SimpleChart.drawPieChart('chart-by-type', typeLabels, typeData);
+
+        // Chart 2: Bar Chart - Location
+        const locLabels = locStatsRes.data.slice(0, 6).map(l => l.location_name.substring(0, 16));
+        const locData = locStatsRes.data.slice(0, 6).map(l => l.incident_count);
+        SimpleChart.drawBarChart('chart-by-location', locLabels, locData, { color: '#06b6d4' });
+
+        // Chart 3: Bar Chart - Monthly
+        const monthLabels = monthStatsRes.data.map(m => m.month);
+        const monthData = monthStatsRes.data.map(m => m.incident_count);
+        SimpleChart.drawBarChart('chart-by-month', monthLabels, monthData, { color: '#4f46e5' });
+
+        // Chart 4: Horizontal Bar Chart - Resolution Time by Priority Level
+        const pTimes = resTimeRes.data?.by_priority || {};
+        const priorityLabels = ['Khẩn cấp (P=999)', 'Cấp bách (P≥3.5)', 'Ưu tiên cao (P≥2.5)', 'Bình thường (P<2.5)'];
+        const priorityData = [
+          pTimes.emergency || 0.8,
+          pTimes.urgent || 4.5,
+          pTimes.high || 14.0,
+          pTimes.normal || 28.5
+        ];
+        SimpleChart.drawHorizontalBarChart('chart-resolution-time', priorityLabels, priorityData, {
+          unit: 'h',
+          colors: ['#dc2626', '#f59e0b', '#eab308', '#2563eb'],
+          labelWidth: 140
+        });
+
+        // Chart 5: Grouped Bar Chart - Staff Performance
+        const staffList = staffStatsRes.data || [];
+        if (staffList.length > 0) {
+          const staffNames = staffList.map(s => s.staff_name.split(' ').slice(-2).join(' '));
+          const series = [
+            { name: 'Đang xử lý', data: staffList.map(s => s.in_progress_count), color: '#f59e0b' },
+            { name: 'Đã hoàn thành', data: staffList.map(s => s.resolved_count), color: '#10b981' }
+          ];
+          SimpleChart.drawGroupedBarChart('chart-staff-performance', staffNames, series);
+        }
+
+      } catch (err) {
+        console.error('Lỗi dashboard:', err);
+      }
+    }
+
+    // 2. All incidents with multi-filters & export
+    async function loadAllIncidents() {
+      await loadAdminFilterDropdowns();
+
+      const tbody = document.getElementById('admin-incidents-tbody');
+      tbody.innerHTML = '<tr><td colspan="10" class="text-center" style="padding: 2.5rem; color: #64748b;">Đang tải danh sách sự cố...</td></tr>';
+
+      const search = (document.getElementById('admin-search')?.value || '').trim();
+      const priority = document.getElementById('admin-filter-priority')?.value || undefined;
+      const status = document.getElementById('admin-filter-status')?.value || undefined;
+      const typeIdVal = document.getElementById('admin-filter-type')?.value;
+      const typeId = typeIdVal ? parseInt(typeIdVal) : undefined;
+      const building = document.getElementById('admin-filter-building')?.value || undefined;
+      const assignee = document.getElementById('admin-filter-assignee')?.value || undefined;
+      const sortBy = document.getElementById('admin-sort-by')?.value || 'priority_score';
+      const isOverdue = document.getElementById('admin-toggle-overdue')?.checked || false;
+
+      let assignedToParam = undefined;
+      if (assignee === '-1') {
+        assignedToParam = -1;
+      } else if (assignee) {
+        assignedToParam = parseInt(assignee);
+      }
+
+      try {
+        const res = await ApiService.getIncidents({
+          search: search || undefined,
+          priority_level: priority,
+          status: status,
+          type_id: typeId,
+          building: building,
+          assigned_to: assignedToParam,
+          overdue_only: isOverdue ? true : undefined,
+          sort_by: sortBy,
+          sort_order: 'desc',
+          page_size: 100
+        });
+
+        lastFetchedAdminIncidents = res.data.items || [];
+        const countEl = document.getElementById('admin-incidents-count');
+        if (countEl) countEl.textContent = lastFetchedAdminIncidents.length;
+
+        if (lastFetchedAdminIncidents.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="10" class="text-center" style="padding: 3rem; color: #64748b;">Không tìm thấy sự cố nào phù hợp với bộ lọc hiện tại.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = lastFetchedAdminIncidents.map(inc => `
+          <tr>
+            <td><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${inc.id}</span></td>
+            <td>${Utils.renderPriorityBadge(inc.priority_level, inc.priority_score)}</td>
+            <td><strong>${Utils.escapeHtml(inc.title)}</strong></td>
+            <td>${inc.location_name}</td>
+            <td>${inc.type_name}</td>
+            <td>${inc.reporter_name || 'Học sinh'}</td>
+            <td>${inc.assignee_name || '<span style="color:#94a3b8;">Chưa có</span>'}</td>
+            <td>${Utils.renderStatusBadge(inc.status)}</td>
+            <td><span style="color:#64748b; font-size:0.8rem;">${Utils.formatDateTime(inc.reported_at)}</span></td>
+            <td style="text-align: center;">
+              <button class="btn btn-xs btn-outline" onclick="openAdminIncidentModal(${inc.id})">Chi tiết</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="10" class="text-center text-danger">${err.message}</td></tr>`;
+      }
+    }
+
+    // Export Incidents to CSV (with UTF-8 BOM for Excel)
+    function exportIncidentsToCSV() {
+      if (!lastFetchedAdminIncidents || lastFetchedAdminIncidents.length === 0) {
+        Toast.warning('Không có dữ liệu sự cố để xuất.');
+        return;
+      }
+
+      const headers = [
+        'Mã sự cố',
+        'Điểm ưu tiên (P)',
+        'Mức ưu tiên',
+        'Tiêu đề sự cố',
+        'Loại sự cố',
+        'Địa điểm',
+        'Mức rủi ro (R)',
+        'Người báo cáo',
+        'Người phụ trách',
+        'Trạng thái',
+        'Thời gian báo cáo',
+        'Thời gian hoàn tất',
+        'Ghi chú xử lý'
+      ];
+
+      const rows = lastFetchedAdminIncidents.map(inc => [
+        inc.id,
+        inc.priority_score,
+        inc.priority_level,
+        `"${(inc.title || '').replace(/"/g, '""')}"`,
+        `"${(inc.type_name || '').replace(/"/g, '""')}"`,
+        `"${(inc.location_name || '').replace(/"/g, '""')}"`,
+        inc.location_risk_level || '',
+        `"${(inc.reporter_name || '').replace(/"/g, '""')}"`,
+        `"${(inc.assignee_name || 'Chưa phân công').replace(/"/g, '""')}"`,
+        inc.status,
+        inc.reported_at || '',
+        inc.resolved_at || '',
+        `"${(inc.resolution_notes || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      const dateStr = new Date().toISOString().slice(0, 10);
+      link.setAttribute('download', `SIMPS_Danh_sach_su_co_${dateStr}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      Toast.success(`Đã xuất thành công ${lastFetchedAdminIncidents.length} sự cố ra file CSV!`);
+    }
+
+    // Modal xem chi tiết sự cố cho Admin
+    async function openAdminIncidentModal(id) {
+      try {
+        const [incRes, histRes, staffRes] = await Promise.all([
+          ApiService.getIncidentById(id),
+          ApiService.getIncidentHistory(id),
+          ApiService.getUsers({ role: 'staff' })
+        ]);
+
+        const inc = incRes.data;
+        const history = histRes.data || [];
+        const staffList = staffRes.data || [];
+
+        const staffOptions = staffList.map(s => `
+          <option value="${s.id}" ${inc.assigned_to === s.id ? 'selected' : ''}>
+            ${s.full_name} (${s.email || 'Kỹ thuật'})
+          </option>
+        `).join('');
+
+        const historyHtml = history.map(h => `
+          <div style="margin-bottom: 8px; padding-left: 12px; border-left: 3px solid var(--primary);">
+            <div style="font-weight: 700; font-size: 0.825rem;">
+              ${Utils.renderStatusBadge(h.new_status)}
+              <span style="font-weight: 400; color: #64748b; font-size: 0.775rem; margin-left: 6px;">${Utils.formatDateTime(h.changed_at)}</span>
+            </div>
+            <div style="font-size: 0.825rem; color: #334155; margin-top: 2px;">
+              ${Utils.escapeHtml(h.notes || 'Không có ghi chú')}
+              <span style="color: #94a3b8; font-size: 0.75rem;">(Bởi: ${h.changed_by_name || 'Hệ thống'})</span>
+            </div>
+          </div>
+        `).join('');
+
+        const content = `
+          <div>
+            <div style="margin-bottom: 1.25rem;">
+              <h3 style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem;">${Utils.escapeHtml(inc.title)}</h3>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                ${Utils.renderPriorityBadge(inc.priority_level, inc.priority_score)}
+                ${Utils.renderStatusBadge(inc.status)}
+              </div>
+            </div>
+
+            <div style="background: var(--surface-muted); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; font-size: 0.875rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+              <div><strong>📍 Địa điểm:</strong> ${inc.location_name}</div>
+              <div><strong>🏷️ Phân loại:</strong> ${inc.type_name}</div>
+              <div><strong>👤 Người báo cáo:</strong> ${inc.reporter_name || 'Học sinh'}</div>
+              <div><strong>⚠️ Mức nghiêm trọng (S):</strong> ${Utils.renderSeverity(inc.severity)}</div>
+              <div><strong>👥 Người ảnh hưởng:</strong> ${inc.people_affected} người</div>
+              <div><strong>🕒 Thời gian báo cáo:</strong> ${Utils.formatDateTime(inc.reported_at)}</div>
+            </div>
+
+            ${inc.description ? `<div style="margin-bottom: 1rem;"><strong style="font-size: 0.825rem; color: #64748b;">Mô tả hiện trường:</strong><p style="margin-top: 0.25rem; font-size: 0.9rem;">${Utils.escapeHtml(inc.description)}</p></div>` : ''}
+
+            <form id="admin-incident-edit-form" style="border-top: 1px dashed var(--surface-border); padding-top: 1rem; margin-top: 1rem;">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Chuyển trạng thái</label>
+                  <select id="admin-modal-status" class="form-control">
+                    <option value="reported" ${inc.status === 'reported' ? 'selected' : ''}>Mới báo cáo</option>
+                    <option value="received" ${inc.status === 'received' ? 'selected' : ''}>Đã tiếp nhận</option>
+                    <option value="assigned" ${inc.status === 'assigned' ? 'selected' : ''}>Đã phân công</option>
+                    <option value="in_progress" ${inc.status === 'in_progress' ? 'selected' : ''}>Đang xử lý</option>
+                    <option value="resolved" ${inc.status === 'resolved' ? 'selected' : ''}>Đã khắc phục</option>
+                    <option value="confirmed" ${inc.status === 'confirmed' ? 'selected' : ''}>Đã xác nhận</option>
+                    <option value="closed" ${inc.status === 'closed' ? 'selected' : ''}>Đóng sự cố</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Kỹ thuật viên phụ trách</label>
+                  <select id="admin-modal-assignee" class="form-control">
+                    <option value="">-- Chưa phân công --</option>
+                    ${staffOptions}
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Ghi chú điều phối</label>
+                <textarea id="admin-modal-notes" class="form-control" rows="2" placeholder="Ghi chú phân công hoặc hướng dẫn xử lý...">${Utils.escapeHtml(inc.resolution_notes || '')}</textarea>
+              </div>
+            </form>
+
+            <div style="margin-top: 1.25rem;">
+              <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem;">Tiến trình lịch sử:</h4>
+              <div style="background: #ffffff; border: 1px solid var(--surface-border); border-radius: var(--radius-md); padding: 0.75rem; max-height: 150px; overflow-y: auto;">
+                ${historyHtml || '<p style="color: #94a3b8; font-size: 0.8rem;">Chưa có cập nhật lịch sử</p>'}
+              </div>
+            </div>
+          </div>
+        `;
+
+        Modal.open({
+          title: `Quản lý sự cố #${inc.id}`,
+          content: content,
+          confirmText: 'Lưu Thay Đổi',
+          cancelText: 'Đóng',
+          onConfirm: async (close) => {
+            const newStatus = document.getElementById('admin-modal-status').value;
+            const assigneeId = document.getElementById('admin-modal-assignee').value;
+            const notes = document.getElementById('admin-modal-notes').value.trim();
+
+            try {
+              if (assigneeId && parseInt(assigneeId) !== inc.assigned_to) {
+                await ApiService.assignIncident(inc.id, parseInt(assigneeId));
+              }
+
+              if (newStatus !== inc.status || notes) {
+                await ApiService.updateIncidentStatus(inc.id, {
+                  status: newStatus,
+                  notes: notes || `Admin cập nhật trạng thái ${newStatus}`,
+                  resolution_notes: newStatus === 'resolved' ? notes : undefined
+                });
+              }
+
+              Toast.success('Cập nhật sự cố thành công!');
+              close();
+              loadAllIncidents();
+            } catch (err) {
+              Toast.error(err.message || 'Lỗi cập nhật');
+            }
+          }
+        });
+      } catch (err) {
+        Toast.error(err.message);
+      }
+    }
+
+    // 3. Weights & Simulator
+    async function loadWeights() {
+      try {
+        const res = await ApiService.getWeights();
+        const w = res.data.weights;
+        document.getElementById('input-w1').value = w.w1;
+        document.getElementById('input-w2').value = w.w2;
+        document.getElementById('input-w3').value = w.w3;
+        document.getElementById('input-w4').value = w.w4;
+        document.getElementById('input-w5').value = w.w5;
+        updateWeightsUI();
+      } catch (err) {
+        Toast.error(err.message);
+      }
+    }
+
+    function updateWeightsUI() {
+      const w1 = parseFloat(document.getElementById('input-w1').value);
+      const w2 = parseFloat(document.getElementById('input-w2').value);
+      const w3 = parseFloat(document.getElementById('input-w3').value);
+      const w4 = parseFloat(document.getElementById('input-w4').value);
+      const w5 = parseFloat(document.getElementById('input-w5').value);
+
+      document.getElementById('val-w1').textContent = w1.toFixed(2);
+      document.getElementById('val-w2').textContent = w2.toFixed(2);
+      document.getElementById('val-w3').textContent = w3.toFixed(2);
+      document.getElementById('val-w4').textContent = w4.toFixed(2);
+      document.getElementById('val-w5').textContent = w5.toFixed(2);
+
+      const sum = (w1 + w2 + w3 + w4 + w5).toFixed(2);
+      const sumBadge = document.getElementById('weight-sum-badge');
+      document.getElementById('weight-sum-display').textContent = sum;
+      
+      const isOk = Math.abs(sum - 1.0) <= 0.05;
+      sumBadge.style.background = isOk ? '#10b981' : '#ef4444';
+
+      runLiveSimulation();
+    }
+
+    function runLiveSimulation() {
+      const w1 = parseFloat(document.getElementById('input-w1').value);
+      const w2 = parseFloat(document.getElementById('input-w2').value);
+      const w3 = parseFloat(document.getElementById('input-w3').value);
+      const w4 = parseFloat(document.getElementById('input-w4').value);
+      const w5 = parseFloat(document.getElementById('input-w5').value);
+
+      const s = parseInt(document.getElementById('sim-s').value);
+      const i = parseInt(document.getElementById('sim-i').value);
+      const r = parseInt(document.getElementById('sim-r').value);
+      const t = parseInt(document.getElementById('sim-t').value);
+      const e = parseInt(document.getElementById('sim-e').value);
+
+      document.getElementById('sim-s-val').textContent = s;
+      document.getElementById('sim-i-val').textContent = i;
+      document.getElementById('sim-r-val').textContent = r;
+      document.getElementById('sim-t-val').textContent = t;
+      document.getElementById('sim-e-val').textContent = e;
+
+      // Check safety override
+      let scoreText = '';
+      let badgeHtml = '';
+
+      if (r >= 5) {
+        scoreText = 'P = 999.00 (Safety Override)';
+        badgeHtml = '<span class="badge priority-emergency" style="font-size: 0.95rem; padding: 0.5rem 1rem;">🚨 KHẨN CẤP</span>';
+      } else {
+        const computed = (w1*s + w2*i + w3*r + w4*t + w5*e).toFixed(2);
+        scoreText = `P = ${computed}`;
+        if (computed >= 3.5) {
+          badgeHtml = '<span class="badge priority-urgent" style="font-size: 0.95rem; padding: 0.5rem 1rem;">⚠️ CẤP BÁCH</span>';
+        } else if (computed >= 2.5) {
+          badgeHtml = '<span class="badge priority-high" style="font-size: 0.95rem; padding: 0.5rem 1rem;">⚡ ƯU TIÊN CAO</span>';
+        } else {
+          badgeHtml = '<span class="badge priority-normal" style="font-size: 0.95rem; padding: 0.5rem 1rem;">ℹ️ BÌNH THƯỜNG</span>';
+        }
+      }
+
+      document.getElementById('sim-result-score').textContent = scoreText;
+      document.getElementById('sim-result-badge').innerHTML = badgeHtml;
+    }
+
+    document.getElementById('weights-form').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const btn = document.getElementById('save-weights-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span>Đang tính toán lại toàn bộ điểm ưu tiên...</span>';
+
+      try {
+        const payload = {
+          w1: parseFloat(document.getElementById('input-w1').value),
+          w2: parseFloat(document.getElementById('input-w2').value),
+          w3: parseFloat(document.getElementById('input-w3').value),
+          w4: parseFloat(document.getElementById('input-w4').value),
+          w5: parseFloat(document.getElementById('input-w5').value)
+        };
+        const res = await ApiService.updateWeights(payload);
+        Toast.success(res.message);
+      } catch (err) {
+        Toast.error(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>💾 Áp Dụng Trọng Số Mới & Tính Lại Toàn Bộ CSDL Trường Học</span>';
+      }
+    });
+
+    // 4. Locations
+    async function loadLocations() {
+      const tbody = document.getElementById('locations-tbody');
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center">Đang tải...</td></tr>';
+      try {
+        const res = await ApiService.getLocations();
+        tbody.innerHTML = res.data.map(l => `
+          <tr>
+            <td><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${l.id}</span></td>
+            <td><strong>${Utils.escapeHtml(l.name)}</strong></td>
+            <td>${l.building}</td>
+            <td>${l.floor || '--'}</td>
+            <td>${Utils.renderSeverity(l.risk_level)}</td>
+            <td>${Utils.escapeHtml(l.description || '--')}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">${err.message}</td></tr>`;
+      }
+    }
+
+    function openAddLocationModal() {
+      const content = `
+        <form id="add-loc-form">
+          <div class="form-group">
+            <label class="form-label">Tên khu vực / phòng học</label>
+            <input type="text" id="new-loc-name" class="form-control" required placeholder="Ví dụ: Phòng Thực Hành Sinh Học">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tòa nhà</label>
+              <input type="text" id="new-loc-bldg" class="form-control" required placeholder="Tòa A, Tòa B...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tầng</label>
+              <input type="text" id="new-loc-floor" class="form-control" placeholder="Tầng 1, Tầng 2...">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mức độ rủi ro khu vực (R: 1-5)</label>
+            <select id="new-loc-risk" class="form-control">
+              <option value="1">1 - Rất thấp (Thư viện, phòng đọc)</option>
+              <option value="2" selected>2 - Bình thường (Phòng học thông thường)</option>
+              <option value="3">3 - Trung bình (Hội trường, nhà vệ sinh)</option>
+              <option value="4">4 - Cao (Cầu thang đông đúc, phòng máy)</option>
+              <option value="5">5 - Rất cao / Nguy hiểm (Phòng thí nghiệm Hóa, Trạm điện)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mô tả thêm</label>
+            <textarea id="new-loc-desc" class="form-control" rows="2"></textarea>
+          </div>
+        </form>
+      `;
+
+      Modal.open({
+        title: 'Thêm Địa Điểm / Phòng Học Mới',
+        content,
+        onConfirm: async (close) => {
+          const payload = {
+            name: document.getElementById('new-loc-name').value.trim(),
+            building: document.getElementById('new-loc-bldg').value.trim(),
+            floor: document.getElementById('new-loc-floor').value.trim(),
+            risk_level: parseInt(document.getElementById('new-loc-risk').value),
+            description: document.getElementById('new-loc-desc').value.trim()
+          };
+          if (!payload.name || !payload.building) {
+            Toast.warning('Vui lòng điền đủ tên và tòa nhà');
+            return;
+          }
+          await ApiService.createLocation(payload);
+          Toast.success('Thêm địa điểm thành công!');
+          close();
+          loadLocations();
+        }
+      });
+    }
+
+    // 5. Types
+    async function loadTypes() {
+      const tbody = document.getElementById('types-tbody');
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center">Đang tải...</td></tr>';
+      try {
+        const res = await ApiService.getIncidentTypes();
+        tbody.innerHTML = res.data.map(t => `
+          <tr>
+            <td><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${t.id}</span></td>
+            <td><strong>${Utils.escapeHtml(t.name)}</strong></td>
+            <td>${t.default_severity}/5</td>
+            <td>
+              ${t.is_safety_critical 
+                ? '<span class="badge priority-emergency">🚨 CÓ (Safety Override)</span>' 
+                : '<span class="badge" style="background:#f1f5f9; color:#64748b;">Không</span>'}
+            </td>
+            <td>${Utils.escapeHtml(t.description || '--')}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">${err.message}</td></tr>`;
+      }
+    }
+
+    function openAddTypeModal() {
+      const content = `
+        <form id="add-type-form">
+          <div class="form-group">
+            <label class="form-label">Tên danh mục sự cố</label>
+            <input type="text" id="new-type-name" class="form-control" required placeholder="Ví dụ: Rò rỉ khí gas, Cháy nổ...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mức nghiêm trọng mặc định (1-5)</label>
+            <input type="number" id="new-type-sev" class="form-control" min="1" max="5" value="2">
+          </div>
+          <div class="form-group">
+            <label style="display:flex; align-items:center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="new-type-safety">
+              <strong>Kích hoạt quy tắc An Toàn Đặc Biệt (Safety Override)</strong>
+            </label>
+            <small style="color: #64748b; font-size: 0.775rem;">Khi chọn, sự cố thuộc danh mục này sẽ luôn xếp hạng Khẩn cấp (P = 999).</small>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mô tả</label>
+            <textarea id="new-type-desc" class="form-control" rows="2"></textarea>
+          </div>
+        </form>
+      `;
+
+      Modal.open({
+        title: 'Thêm Danh Mục Sự Cố Mới',
+        content,
+        onConfirm: async (close) => {
+          const payload = {
+            name: document.getElementById('new-type-name').value.trim(),
+            default_severity: parseInt(document.getElementById('new-type-sev').value),
+            is_safety_critical: document.getElementById('new-type-safety').checked,
+            description: document.getElementById('new-type-desc').value.trim()
+          };
+          if (!payload.name) {
+            Toast.warning('Vui lòng nhập tên loại sự cố');
+            return;
+          }
+          await ApiService.createIncidentType(payload);
+          Toast.success('Thêm loại sự cố thành công!');
+          close();
+          loadTypes();
+        }
+      });
+    }
+
+    // 6. Users
+    async function loadUsers() {
+      const tbody = document.getElementById('users-tbody');
+      tbody.innerHTML = '<tr><td colspan="7" class="text-center">Đang tải...</td></tr>';
+      try {
+        const res = await ApiService.getUsers();
+        tbody.innerHTML = res.data.map(u => `
+          <tr>
+            <td><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${u.id}</span></td>
+            <td><code>${u.username}</code></td>
+            <td><strong>${Utils.escapeHtml(u.full_name)}</strong></td>
+            <td><span class="badge ${u.role === 'admin' ? 'badge-primary' : u.role === 'staff' ? 'badge-warning' : 'badge-secondary'}">${u.role.toUpperCase()}</span></td>
+            <td>${u.class_name || '--'}</td>
+            <td>${u.email || '--'}</td>
+            <td>${u.is_active ? '<span class="badge badge-success">Hoạt động</span>' : '<span class="badge badge-danger">Vô hiệu</span>'}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">${err.message}</td></tr>`;
+      }
+    }
+
+    function openAddUserModal() {
+      const content = `
+        <form id="add-user-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tên đăng nhập</label>
+              <input type="text" id="new-user-name" class="form-control" required placeholder="hs21, nv06...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mật khẩu</label>
+              <input type="password" id="new-user-pass" class="form-control" required placeholder="Ít nhất 6 ký tự">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Họ và tên</label>
+            <input type="text" id="new-user-fullname" class="form-control" required placeholder="Nguyễn Văn A">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Vai trò</label>
+              <select id="new-user-role" class="form-control">
+                <option value="student">Học sinh (Student)</option>
+                <option value="staff">Nhân viên CSVC (Staff)</option>
+                <option value="admin">Quản trị viên (Admin)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lớp học (Nếu là học sinh)</label>
+              <input type="text" id="new-user-class" class="form-control" placeholder="10A1, 11B2...">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="new-user-email" class="form-control" placeholder="example@truong.edu.vn">
+          </div>
+        </form>
+      `;
+
+      Modal.open({
+        title: 'Tạo Tài Khoản Người Dùng Mới',
+        content,
+        onConfirm: async (close) => {
+          const payload = {
+            username: document.getElementById('new-user-name').value.trim(),
+            password: document.getElementById('new-user-pass').value,
+            full_name: document.getElementById('new-user-fullname').value.trim(),
+            role: document.getElementById('new-user-role').value,
+            class_name: document.getElementById('new-user-class').value.trim() || undefined,
+            email: document.getElementById('new-user-email').value.trim() || undefined
+          };
+          if (!payload.username || !payload.password || !payload.full_name) {
+            Toast.warning('Vui lòng điền đủ thông tin bắt buộc');
+            return;
+          }
+          await ApiService.createUser(payload);
+          Toast.success('Tạo tài khoản thành công!');
+          close();
+          loadUsers();
+        }
+      });
+    }
+
+    // Hỗ trợ Hash Navigation & Load tab ban đầu
+    function checkHashRoute() {
+      const hash = window.location.hash.replace('#', '');
+      const validTabs = ['dashboard', 'incidents', 'weights', 'locations', 'types', 'users'];
+      if (validTabs.includes(hash)) {
+        switchAdminTab(hash);
+      } else {
+        switchAdminTab('dashboard');
+      }
+    }
+
+    window.addEventListener('hashchange', checkHashRoute);
+    checkHashRoute();
+  </script>
+</body>
+</html>

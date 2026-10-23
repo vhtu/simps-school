@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIMPS - Cổng Thông Tin Học Sinh</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/student.css">
+</head>
+<body class="student-body">
+
+  <!-- NAVBAR CHÍNH -->
+  <header class="student-navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <img src="../assets/img/logo.svg" alt="SIMPS Logo" class="brand-logo">
+        <div>
+          <span class="brand-name">SIMPS HỌC ĐƯỜNG</span>
+          <span class="brand-badge">Học Sinh</span>
+        </div>
+      </div>
+
+      <div class="nav-user">
+        <div id="notification-bell-container"></div>
+        <div class="user-profile">
+          <div class="user-avatar" id="user-avatar-initials">HS</div>
+          <div class="user-details">
+            <span id="user-full-name" class="user-name">Đang tải...</span>
+            <span id="user-class" class="user-role-badge">Lớp 10A</span>
+          </div>
+        </div>
+        <button id="logout-btn" class="btn btn-outline btn-sm">
+          <span>Đăng xuất</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTAINER CHÍNH -->
+  <main class="student-container">
+    
+    <!-- BANNER HERO -->
+    <div class="student-hero">
+      <div class="hero-text">
+        <h2 id="greeting-title">Chào bạn! 👋 Phát hiện sự cố học đường?</h2>
+        <p>Gửi báo cáo hư hỏng cơ sở vật chất (điện, quạt, máy chiếu, bàn ghế...). Thuật toán SIMPS sẽ tự động tính điểm ưu tiên và gửi đến tổ kỹ thuật xử lý nhanh nhất.</p>
+      </div>
+      <button class="btn btn-primary btn-lg" onclick="switchTab('create')" style="background: #ffffff; color: var(--primary); font-weight: 800; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+        <span>➕ Báo Cáo Sự Cố Mới</span>
+      </button>
+    </div>
+
+    <!-- TABS NAVIGATION -->
+    <div class="tabs-nav">
+      <button id="nav-btn-list" class="tab-item active" onclick="switchTab('list')">
+        <span>📋</span> Báo Cáo Của Tôi (<span id="my-report-count">0</span>)
+      </button>
+      <button id="nav-btn-create" class="tab-item" onclick="switchTab('create')">
+        <span>✏️</span> Tạo Báo Cáo Mới
+      </button>
+    </div>
+
+    <!-- TAB 1: DANH SÁCH BÁO CÁO CỦA HỌC SINH -->
+    <section id="tab-list" class="tab-content">
+      <!-- Thống kê nhanh của học sinh -->
+      <div class="stats-overview-grid">
+        <div class="stat-card">
+          <div class="stat-label">Tổng báo cáo đã gửi</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+        <div class="stat-card stat-card-warning">
+          <div class="stat-label">Đang được sửa chữa</div>
+          <div class="stat-value" id="stat-in-progress">0</div>
+        </div>
+        <div class="stat-card" style="border-top: 4px solid #f59e0b; background: #fffbeb;">
+          <div class="stat-label" style="color: #b45309; font-weight: 700;">Cần bạn xác nhận</div>
+          <div class="stat-value" id="stat-need-confirm" style="color: #d97706;">0</div>
+        </div>
+        <div class="stat-card stat-card-success">
+          <div class="stat-label">Đã hoàn tất đóng</div>
+          <div class="stat-value" id="stat-resolved">0</div>
+        </div>
+      </div>
+
+      <!-- BỘ LỌC TÌM KIẾM LINH HOẠT CHO HỌC SINH -->
+      <div class="filter-card" style="background: #ffffff; border: 1px solid var(--surface-border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.75rem;">
+          <!-- Filter Chips Trạng thái -->
+          <div class="filter-chips-row" style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: #64748b; margin-right: 0.25rem;">Trạng thái:</span>
+            <button class="filter-chip-btn active" id="chip-status-all" onclick="setStudentStatusFilter('', this)">Tất cả</button>
+            <button class="filter-chip-btn" id="chip-status-active" onclick="setStudentStatusFilter('active', this)">⏳ Đang xử lý</button>
+            <button class="filter-chip-btn" id="chip-status-confirm" onclick="setStudentStatusFilter('resolved', this)" style="border-color: #f59e0b; color: #b45309;">
+              🔔 Cần xác nhận (<span id="chip-confirm-count">0</span>)
+            </button>
+            <button class="filter-chip-btn" id="chip-status-closed" onclick="setStudentStatusFilter('closed', this)">✅ Đã hoàn tất</button>
+          </div>
+
+          <!-- Tìm kiếm nhanh -->
+          <div style="flex: 1; min-width: 240px; max-width: 380px;">
+            <input type="text" id="student-search-input" class="form-control" placeholder="🔍 Tìm sự cố, vị trí..." oninput="filterStudentIncidents()">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <label style="font-size: 0.8rem; font-weight: 600; color: #475569; margin: 0;">Mốc thời gian:</label>
+            <select id="student-time-filter" class="form-control" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;" onchange="filterStudentIncidents()">
+              <option value="all">Toàn bộ thời gian</option>
+              <option value="7days">7 ngày gần nhất</option>
+              <option value="30days">30 ngày gần nhất</option>
+            </select>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <label style="font-size: 0.8rem; font-weight: 600; color: #475569; margin: 0;">Loại sự cố:</label>
+            <select id="student-type-filter" class="form-control" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;" onchange="filterStudentIncidents()">
+              <option value="">Tất cả danh mục</option>
+            </select>
+          </div>
+
+          <div style="margin-left: auto; font-size: 0.8rem; color: #64748b;">
+            Hiển thị: <strong id="student-visible-count">0</strong> sự cố
+          </div>
+        </div>
+      </div>
+
+      <!-- Bảng danh sách sự cố -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Tiến trình xử lý các sự cố bạn đã báo cáo</h3>
+          <button class="btn btn-sm btn-secondary" onclick="loadMyIncidents()">
+            <span>🔄 Làm mới</span>
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Mã</th>
+                <th>Tiêu đề sự cố</th>
+                <th>Danh mục</th>
+                <th>Khu vực</th>
+                <th>Mức ưu tiên (P)</th>
+                <th>Trạng thái</th>
+                <th>Thời gian</th>
+                <th style="width: 140px; text-align: center;">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="incidents-tbody">
+              <tr>
+                <td colspan="8" class="text-center" style="padding: 2.5rem; color: #64748b;">
+                  Đang tải danh sách báo cáo...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: TẠO BÁO CÁO MỚI -->
+    <section id="tab-create" class="tab-content" style="display: none;">
+      <div class="card" style="max-width: 860px; margin: 0 auto;">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Phiếu Tiếp Nhận Báo Cáo Sự Cố</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.2rem;">
+              Dữ liệu bạn nhập sẽ được thuật toán tự động tính toán trọng số ưu tiên.
+            </p>
+          </div>
+          <span class="badge badge-primary">SIMPS Algorithm Form</span>
+        </div>
+
+        <div class="card-body">
+          <form id="incident-form">
+            <!-- Tiêu đề -->
+            <div class="form-group">
+              <label class="form-label" for="incident-title">
+                Tiêu đề sự cố ngắn gọn <span style="color: #ef4444;">*</span>
+              </label>
+              <input type="text" id="incident-title" class="form-control" placeholder="Ví dụ: Vòi nước bồn rửa tay Tòa A bị gãy, Quạt số 2 lớp 10A1 kêu rè rè..." required>
+            </div>
+
+            <!-- Loại sự cố & Địa điểm -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="incident-type">
+                  Loại hư hỏng / thiết bị <span style="color: #ef4444;">*</span>
+                </label>
+                <select id="incident-type" class="form-control" required>
+                  <option value="">-- Chọn danh mục --</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="incident-location">
+                  Vị trí phát hiện <span style="color: #ef4444;">*</span>
+                </label>
+                <select id="incident-location" class="form-control" required>
+                  <option value="">-- Chọn phòng / khu vực --</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Mức độ nghiêm trọng trực quan (S) -->
+            <div class="form-group">
+              <label class="form-label">
+                Mức độ nghiêm trọng của hư hỏng (S) <span style="color: #ef4444;">*</span>
+              </label>
+              <div class="severity-selector">
+                <div class="severity-card" onclick="selectSeverity(1)" id="sev-1">
+                  <span class="severity-num" style="color: #10b981;">1</span>
+                  <span class="severity-name">Rất nhẹ</span>
+                </div>
+                <div class="severity-card active" onclick="selectSeverity(2)" id="sev-2">
+                  <span class="severity-num" style="color: #06b6d4;">2</span>
+                  <span class="severity-name">Nhẹ</span>
+                </div>
+                <div class="severity-card" onclick="selectSeverity(3)" id="sev-3">
+                  <span class="severity-num" style="color: #f59e0b;">3</span>
+                  <span class="severity-name">Trung bình</span>
+                </div>
+                <div class="severity-card" onclick="selectSeverity(4)" id="sev-4">
+                  <span class="severity-num" style="color: #f97316;">4</span>
+                  <span class="severity-name">Nặng</span>
+                </div>
+                <div class="severity-card" onclick="selectSeverity(5)" id="sev-5">
+                  <span class="severity-num" style="color: #ef4444;">5</span>
+                  <span class="severity-name">Rất nguy hiểm</span>
+                </div>
+              </div>
+              <input type="hidden" id="incident-severity" value="2">
+            </div>
+
+            <!-- Số người ảnh hưởng (I) & Ảnh hưởng học tập (E) -->
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="incident-people">
+                  Ước tính số người bị ảnh hưởng (I) <span style="color: #ef4444;">*</span>
+                </label>
+                <input type="number" id="incident-people" class="form-control" min="1" max="2000" value="40" required>
+                <small style="color: #64748b; font-size: 0.775rem;">1-5: Cá nhân • 40: Một lớp • 200+: Khu vực công cộng</small>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="incident-impact">
+                  Ảnh hưởng đến việc học & dạy (E) <span style="color: #ef4444;">*</span>
+                </label>
+                <select id="incident-impact" class="form-control" required>
+                  <option value="1">1 - Không ảnh hưởng đến giờ học</option>
+                  <option value="2">2 - Ảnh hưởng ít, vẫn học được</option>
+                  <option value="3" selected>3 - Gây khó chịu hoặc bất tiện</option>
+                  <option value="4">4 - Làm gián đoạn hoạt động học tập</option>
+                  <option value="5">5 - Buộc phải dừng tiết học / đổi phòng</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Mô tả chi tiết -->
+            <div class="form-group">
+              <label class="form-label" for="incident-desc">Mô tả cụ thể hiện trường</label>
+              <textarea id="incident-desc" class="form-control" rows="3" placeholder="Ví dụ: Bóng đèn góc bên phải bảng viết bị chập chớp tắt liên tục, vòi nước bồn rửa thứ 2 vặn không đóng được..."></textarea>
+            </div>
+
+            <!-- Upload ảnh minh chứng -->
+            <div class="form-group">
+              <label class="form-label">Ảnh chụp hiện trường (Không bắt buộc)</label>
+              <div class="image-upload-zone" onclick="document.getElementById('incident-image').click()">
+                <div class="upload-icon">📷</div>
+                <div style="font-weight: 700; color: var(--primary);">Bấm để chọn ảnh từ điện thoại/máy tính</div>
+                <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.25rem;">Hỗ trợ định dạng JPG, PNG, WEBP (Tối đa 5MB)</div>
+                <div id="image-preview-name" style="margin-top: 0.5rem; font-weight: 600; color: #10b981;"></div>
+              </div>
+              <input type="file" id="incident-image" accept="image/*" style="display: none;" onchange="previewSelectedImage(this)">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 2rem;">
+              <button type="button" class="btn btn-secondary" onclick="switchTab('list')">Hủy bỏ</button>
+              <button type="submit" id="submit-incident-btn" class="btn btn-primary btn-lg">
+                <span>🚀 Gửi Báo Cáo Đến Ban CSVC</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/components/toast.js"></script>
+  <script src="../js/components/modal.js"></script>
+  <script src="../js/components/notifications.js"></script>
+
+  <script>
+    const user = AuthService.checkAuth(['student', 'staff', 'admin']);
+    if (user) {
+      document.getElementById('user-full-name').textContent = user.full_name;
+      document.getElementById('user-class').textContent = user.class_name ? `Lớp ${user.class_name}` : user.role.toUpperCase();
+      
+      // Initials for avatar
+      const parts = user.full_name.trim().split(' ');
+      const initials = parts.length > 1 ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase() : user.full_name.substring(0, 2).toUpperCase();
+      document.getElementById('user-avatar-initials').textContent = initials;
+
+      // Khởi tạo thông báo thời gian thực cho học sinh
+      window.notifManager = new NotificationManager({
+        containerId: 'notification-bell-container'
+      });
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', () => AuthService.logout());
+
+    let allMyIncidents = [];
+    let selectedStudentStatusGroup = '';
+
+    // Switch tab
+    function switchTab(tab) {
+      document.getElementById('tab-list').style.display = tab === 'list' ? 'block' : 'none';
+      document.getElementById('tab-create').style.display = tab === 'create' ? 'block' : 'none';
+      document.getElementById('nav-btn-list').classList.toggle('active', tab === 'list');
+      document.getElementById('nav-btn-create').classList.toggle('active', tab === 'create');
+      if (tab === 'list') loadMyIncidents();
+    }
+
+    // Severity visual selection
+    function selectSeverity(val) {
+      document.getElementById('incident-severity').value = val;
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById(`sev-${i}`).classList.toggle('active', i === val);
+      }
+    }
+
+    function previewSelectedImage(input) {
+      if (input.files && input.files[0]) {
+        document.getElementById('image-preview-name').textContent = `✅ Đã chọn file: ${input.files[0].name}`;
+      }
+    }
+
+    // Load categories
+    async function loadFormCategories() {
+      try {
+        const [typesRes, locsRes] = await Promise.all([
+          ApiService.getIncidentTypes(),
+          ApiService.getLocations()
+        ]);
+
+        const typeSelect = document.getElementById('incident-type');
+        const filterTypeSelect = document.getElementById('student-type-filter');
+
+        typesRes.data.forEach(t => {
+          // Form select
+          const opt = document.createElement('option');
+          opt.value = t.id;
+          opt.textContent = `${t.name} ${t.is_safety_critical ? '🚨 (Khẩn cấp)' : ''}`;
+          typeSelect.appendChild(opt);
+
+          // Filter select
+          if (filterTypeSelect) {
+            const fOpt = document.createElement('option');
+            fOpt.value = t.id;
+            fOpt.textContent = t.name;
+            filterTypeSelect.appendChild(fOpt);
+          }
+        });
+
+        const locSelect = document.getElementById('incident-location');
+        locsRes.data.forEach(l => {
+          const opt = document.createElement('option');
+          opt.value = l.id;
+          opt.textContent = `${l.name} (${l.building} • Rủi ro: ${l.risk_level}/5)`;
+          locSelect.appendChild(opt);
+        });
+      } catch (err) {
+        console.error('Lỗi danh mục:', err);
+      }
+    }
+
+    // Set Status Filter Chip
+    function setStudentStatusFilter(group, btn) {
+      selectedStudentStatusGroup = group;
+      document.querySelectorAll('.filter-chips-row .filter-chip-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterStudentIncidents();
+    }
+
+    // Filter & Search student incidents
+    function filterStudentIncidents() {
+      const q = (document.getElementById('student-search-input')?.value || '').toLowerCase().trim();
+      const timeFilter = document.getElementById('student-time-filter')?.value || 'all';
+      const typeFilter = document.getElementById('student-type-filter')?.value || '';
+
+      const now = new Date();
+
+      const filtered = allMyIncidents.filter(inc => {
+        // 1. Status group
+        if (selectedStudentStatusGroup === 'active') {
+          if (!['reported', 'received', 'assigned', 'in_progress'].includes(inc.status)) return false;
+        } else if (selectedStudentStatusGroup === 'resolved') {
+          if (inc.status !== 'resolved') return false;
+        } else if (selectedStudentStatusGroup === 'closed') {
+          if (!['confirmed', 'closed'].includes(inc.status)) return false;
+        }
+
+        // 2. Type filter
+        if (typeFilter && String(inc.type_id) !== String(typeFilter)) {
+          return false;
+        }
+
+        // 3. Time filter
+        if (timeFilter !== 'all' && inc.reported_at) {
+          const repDate = new Date(inc.reported_at);
+          const diffDays = (now - repDate) / (1000 * 3600 * 24);
+          if (timeFilter === '7days' && diffDays > 7) return false;
+          if (timeFilter === '30days' && diffDays > 30) return false;
+        }
+
+        // 4. Keyword search
+        if (q) {
+          const title = (inc.title || '').toLowerCase();
+          const desc = (inc.description || '').toLowerCase();
+          const loc = (inc.location_name || '').toLowerCase();
+          const type = (inc.type_name || '').toLowerCase();
+          const id = `#${inc.id}`;
+          if (!title.includes(q) && !desc.includes(q) && !loc.includes(q) && !type.includes(q) && !id.includes(q)) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      const countEl = document.getElementById('student-visible-count');
+      if (countEl) countEl.textContent = filtered.length;
+
+      renderStudentTable(filtered);
+    }
+
+    // Render Student Table Rows
+    function renderStudentTable(items) {
+      const tbody = document.getElementById('incidents-tbody');
+      if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center" style="padding: 3rem; color: #64748b;">Không tìm thấy sự cố nào phù hợp với bộ lọc hiện tại.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = items.map(inc => {
+        const canConfirm = inc.status === 'resolved';
+        return `
+          <tr ${canConfirm ? 'style="background-color: #fffbeb;"' : ''}>
+            <td><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${inc.id}</span></td>
+            <td>
+              <div style="font-weight: 700; color: #0f172a;">${Utils.escapeHtml(inc.title)}</div>
+              <div style="font-size: 0.8rem; color: #64748b;">${Utils.escapeHtml(inc.description || '')}</div>
+            </td>
+            <td>${inc.type_name || '--'}</td>
+            <td><strong>${inc.location_name || '--'}</strong></td>
+            <td>${Utils.renderPriorityBadge(inc.priority_level, inc.priority_score)}</td>
+            <td>${Utils.renderStatusBadge(inc.status)}</td>
+            <td><span style="color: #64748b; font-size: 0.825rem;">${Utils.formatDateTime(inc.reported_at)}</span></td>
+            <td style="text-align: center;">
+              <div style="display: inline-flex; gap: 6px;">
+                <button class="btn btn-xs btn-outline" onclick="viewDetail(${inc.id})">Chi tiết</button>
+                ${canConfirm ? `
+                  <button class="btn btn-xs btn-success" onclick="confirmIncident(${inc.id})" title="Xác nhận sự cố đã khắc phục tốt">
+                    ✅ Xác nhận
+                  </button>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Load incidents
+    async function loadMyIncidents() {
+      const tbody = document.getElementById('incidents-tbody');
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center" style="padding: 2.5rem; color: #64748b;">Đang tải danh sách báo cáo...</td></tr>';
+
+      try {
+        const res = await ApiService.getIncidents({ my_reports: true, page_size: 100 });
+        allMyIncidents = res.data.items || [];
+
+        const totalCount = allMyIncidents.length;
+        const inProgressCount = allMyIncidents.filter(i => ['received', 'assigned', 'in_progress'].includes(i.status)).length;
+        const needConfirmCount = allMyIncidents.filter(i => i.status === 'resolved').length;
+        const resolvedCount = allMyIncidents.filter(i => ['confirmed', 'closed'].includes(i.status)).length;
+
+        document.getElementById('my-report-count').textContent = totalCount;
+        document.getElementById('stat-total').textContent = totalCount;
+        document.getElementById('stat-in-progress').textContent = inProgressCount;
+        document.getElementById('stat-need-confirm').textContent = needConfirmCount;
+        document.getElementById('stat-resolved').textContent = resolvedCount;
+        document.getElementById('chip-confirm-count').textContent = needConfirmCount;
+
+        filterStudentIncidents();
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger" style="padding: 2rem;">Lỗi tải dữ liệu: ${err.message}</td></tr>`;
+      }
+    }
+
+    // Detail modal with visual progression stepper
+    async function viewDetail(id) {
+      try {
+        const res = await ApiService.getIncidentById(id);
+        const inc = res.data;
+        const historyRes = await ApiService.getIncidentHistory(id);
+        const history = historyRes.data || [];
+
+        // Build status progression
+        const steps = ['reported', 'received', 'assigned', 'in_progress', 'resolved', 'confirmed'];
+        const stepLabels = ['Báo cáo', 'Tiếp nhận', 'Phân công', 'Đang xử lý', 'Hoàn tất', 'Xác nhận'];
+        const currentIdx = steps.indexOf(inc.status);
+
+        let stepperHtml = `
+          <div class="timeline-stepper">
+            ${steps.map((st, i) => {
+              const isDone = currentIdx >= i;
+              const isActive = inc.status === st;
+              return `
+                <div class="step-node ${isDone ? 'completed' : ''} ${isActive ? 'active' : ''}">
+                  <div class="step-circle">${isDone ? '✓' : i + 1}</div>
+                  <div class="step-label">${stepLabels[i]}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+
+        let historyHtml = history.map(h => `
+          <div style="margin-bottom: 10px; padding-left: 14px; border-left: 3px solid var(--primary); position: relative;">
+            <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">
+              ${Utils.renderStatusBadge(h.new_status)}
+              <span style="font-weight: 400; color: #64748b; font-size: 0.8rem; margin-left: 6px;">${Utils.formatDateTime(h.changed_at)}</span>
+            </div>
+            <div style="font-size: 0.85rem; color: #334155; margin-top: 3px;">
+              ${Utils.escapeHtml(h.notes || 'Không có ghi chú')} 
+              <span style="color: #94a3b8; font-size: 0.775rem;">(Người thực hiện: ${h.changed_by_name || 'Hệ thống'})</span>
+            </div>
+          </div>
+        `).join('');
+
+        const content = `
+          <div>
+            ${stepperHtml}
+
+            <div style="margin-bottom: 1.25rem;">
+              <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem;">${Utils.escapeHtml(inc.title)}</h3>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                ${Utils.renderPriorityBadge(inc.priority_level, inc.priority_score)}
+                ${Utils.renderStatusBadge(inc.status)}
+              </div>
+            </div>
+
+            <div style="background: var(--surface-muted); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; font-size: 0.9rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div><strong>📍 Địa điểm:</strong> ${inc.location_name}</div>
+              <div><strong>🏷️ Danh mục:</strong> ${inc.type_name}</div>
+              <div><strong>⚠️ Mức nghiêm trọng (S):</strong> ${Utils.renderSeverity(inc.severity)}</div>
+              <div><strong>👥 Người bị ảnh hưởng:</strong> ${inc.people_affected} người</div>
+              <div><strong>🕒 Thời gian báo cáo:</strong> ${Utils.formatDateTime(inc.reported_at)}</div>
+              <div><strong>👤 Kỹ thuật phụ trách:</strong> ${inc.assignee_name || 'Chưa phân công'}</div>
+            </div>
+
+            ${inc.description ? `<div style="margin-bottom: 1rem;"><strong style="font-size: 0.85rem; color: #64748b;">Mô tả chi tiết:</strong><p style="margin-top: 0.25rem; font-size: 0.925rem;">${Utils.escapeHtml(inc.description)}</p></div>` : ''}
+
+            ${inc.resolution_notes ? `
+              <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+                <div style="font-weight: 700; color: #166534; font-size: 0.9rem;">🛠️ Ghi chú hoàn thành của Kỹ thuật viên:</div>
+                <div style="color: #14532d; font-size: 0.9rem; margin-top: 0.25rem;">${Utils.escapeHtml(inc.resolution_notes)}</div>
+              </div>
+            ` : ''}
+
+            <div style="margin-top: 1.5rem;">
+              <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">Lịch sử tiến trình xử lý:</h4>
+              <div style="background: #ffffff; border: 1px solid var(--surface-border); border-radius: var(--radius-md); padding: 1rem;">
+                ${historyHtml || '<p style="color: #94a3b8; font-size: 0.85rem;">Chưa có cập nhật tiến trình</p>'}
+              </div>
+            </div>
+          </div>
+        `;
+
+        Modal.open({
+          title: `Sự cố #${inc.id}`,
+          content: content,
+          cancelText: 'Đóng'
+        });
+      } catch (err) {
+        Toast.error(err.message);
+      }
+    }
+
+    async function confirmIncident(id) {
+      if (!confirm('Bạn có xác nhận sự cố này đã được sửa chữa thỏa đáng và an toàn không?')) return;
+      try {
+        await ApiService.confirmResolution(id);
+        Toast.success('Cảm ơn bạn! Đã ghi nhận xác nhận hoàn thành vào báo cáo KHKT.');
+        loadMyIncidents();
+      } catch (err) {
+        Toast.error(err.message);
+      }
+    }
+
+    // Submit report
+    document.getElementById('incident-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submit-incident-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span>Đang tính điểm ưu tiên P...</span>';
+
+      try {
+        let imagePaths = [];
+        const imageFile = document.getElementById('incident-image').files[0];
+        if (imageFile) {
+          const uploadRes = await ApiService.uploadImage(imageFile);
+          if (uploadRes.success && uploadRes.data) {
+            imagePaths.push(uploadRes.data.url);
+          }
+        }
+
+        const payload = {
+          title: document.getElementById('incident-title').value.trim(),
+          type_id: parseInt(document.getElementById('incident-type').value),
+          location_id: parseInt(document.getElementById('incident-location').value),
+          severity: parseInt(document.getElementById('incident-severity').value),
+          people_affected: parseInt(document.getElementById('incident-people').value),
+          learning_impact: parseInt(document.getElementById('incident-impact').value),
+          description: document.getElementById('incident-desc').value.trim(),
+          image_paths: imagePaths
+        };
+
+        const res = await ApiService.createIncident(payload);
+        const inc = res.data;
+
+        Toast.success(`Báo cáo thành công! Thuật toán đã xếp mức: ${inc.priority_level.toUpperCase()} (P = ${inc.priority_score})`);
+        document.getElementById('incident-form').reset();
+        document.getElementById('image-preview-name').textContent = '';
+        selectSeverity(2);
+        switchTab('list');
+      } catch (err) {
+        Toast.error(err.message || 'Lỗi gửi báo cáo');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🚀 Gửi Báo Cáo Đến Ban CSVC</span>';
+      }
+    });
+
+    loadFormCategories();
+    loadMyIncidents();
+  </script>
+</body>
+</html>
