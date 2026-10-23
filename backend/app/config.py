@@ -24,6 +24,10 @@ if IS_VERCEL and not os.getenv("DATABASE_URL"):
 else:
     DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{DB_PATH}")
 
+# Tương thích với chuỗi kết nối của Supabase/Heroku (postgres:// -> postgresql://)
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 # === Cấu hình JWT (JSON Web Token) ===
 SECRET_KEY = os.getenv("SECRET_KEY", "simps-khkt-2024-secret-key-school-project")
 ALGORITHM = "HS256"

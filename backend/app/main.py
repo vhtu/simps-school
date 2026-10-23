@@ -24,6 +24,17 @@ from app.utils.helpers import api_response
 # Tạo toàn bộ các bảng trong CSDL nếu chưa tồn tại
 Base.metadata.create_all(bind=engine)
 
+# Tự động nạp dữ liệu mẫu ban đầu nếu cơ sở dữ liệu hoàn toàn mới (ví dụ Supabase mới tạo)
+try:
+    from app.database import SessionLocal
+    with SessionLocal() as db_session:
+        from app.models.user import User
+        if db_session.query(User).count() == 0:
+            from seeds.seed_data import seed_database
+            seed_database()
+except Exception as e:
+    pass
+
 # Khởi tạo thư mục upload nếu chưa có
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
