@@ -327,6 +327,11 @@
       document.querySelectorAll('.filter-chips-row .filter-chip-btn').forEach(b => {
         b.classList.toggle('active', b.textContent.includes('Khẩn cấp'));
       });
+      // Khi nhấn "Xử lý ngay", chỉ hiển thị những sự cố đang chờ hoặc đang xử lý, loại bỏ sự cố đã đóng
+      const statusSelect = document.getElementById('filter-status');
+      if (statusSelect && (statusSelect.value === 'closed' || statusSelect.value === 'resolved')) {
+        statusSelect.value = '';
+      }
       loadIncidents();
     }
 
@@ -420,6 +425,12 @@
 
         const res = await ApiService.getIncidents(queryParams);
         let items = res.data.items || [];
+
+        // Nếu đang lọc khẩn cấp (qua banner 'Xử lý ngay') mà không chọn cụ thể trạng thái nào,
+        // chỉ hiển thị các sự cố THỰC SỰ CẦN XỬ LÝ (loại trừ các sự cố đã hoàn thành hoặc đã đóng)
+        if (selectedPriority === 'emergency' && !status) {
+          items = items.filter(i => !['resolved', 'confirmed', 'closed'].includes(i.status));
+        }
 
         // Client filter for "others" if selected
         if (assignment === 'others' && user) {
