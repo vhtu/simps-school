@@ -14,10 +14,23 @@ connect_args = {}
 if DATABASE_URL.startswith("sqlite"):
     connect_args["check_same_thread"] = False
 
+engine_kwargs = {
+    "connect_args": connect_args,
+    "echo": False,
+}
+
+# Tối ưu hóa kết nối PostgreSQL/Supabase trên môi trường Serverless (Vercel)
+if not DATABASE_URL.startswith("sqlite"):
+    engine_kwargs.update({
+        "pool_size": 5,
+        "max_overflow": 10,
+        "pool_recycle": 300,
+        "pool_pre_ping": True,  # Tự động kiểm tra và tái sử dụng kết nối còn sống
+    })
+
 engine = create_engine(
     DATABASE_URL,
-    connect_args=connect_args,
-    echo=False,  # Đặt True để xem câu SQL trong console (debug)
+    **engine_kwargs
 )
 
 # Bật foreign key cho SQLite (mặc định SQLite tắt foreign key)
