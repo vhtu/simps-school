@@ -224,3 +224,93 @@
   height: 100%;
   border-radius: var(--radius-full);
 }
+
+/* RESPONSIVE CHO STAFF TRÊN ĐIỆN THOẠI & TABLET */
+.staff-mobile-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #0f172a;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.staff-sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 39;
+}
+
+@media (max-width: 768px) {
+  .staff-mobile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .staff-sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--anim-normal);
+  }
+
+  .staff-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .staff-sidebar-overlay.active {
+    display: block;
+  }
+
+  .staff-main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .staff-topbar {
+    padding: 0 1rem;
+    height: 60px;
+  }
+
+  .staff-topbar h2 {
+    font-size: 1rem !important;
+  }
+
+  .staff-topbar span {
+    display: none;
+  }
+
+  .staff-content {
+    padding: 1rem 0.85rem;
+  }
+
+  .stats-overview-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.65rem;
+  }
+
+  .emergency-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem 1rem;
+    gap: 1rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+

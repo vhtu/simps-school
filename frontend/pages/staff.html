@@ -11,27 +11,33 @@
 <body>
 
   <div class="staff-layout">
+    <!-- OVERLAY NỀN KHI MỞ MENU MOBILE -->
+    <div id="staff-sidebar-overlay" class="staff-sidebar-overlay" onclick="toggleStaffSidebar()"></div>
+
     <!-- SIDEBAR -->
-    <aside class="staff-sidebar">
-      <div class="brand">
-        <img src="../assets/img/logo.svg" alt="SIMPS Logo">
-        <div>
-          <div class="brand-title">SIMPS KỸ THUẬT</div>
-          <div class="brand-sub">Điều Phối & Bảo Trì</div>
+    <aside id="staff-sidebar" class="staff-sidebar">
+      <div class="brand" style="justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <img src="../assets/img/logo.svg" alt="SIMPS Logo">
+          <div>
+            <div class="brand-title">SIMPS KỸ THUẬT</div>
+            <div class="brand-sub">Điều Phối & Bảo Trì</div>
+          </div>
         </div>
+        <button class="staff-mobile-btn" style="color: #cbd5e1;" onclick="toggleStaffSidebar()">✕</button>
       </div>
 
       <nav class="staff-nav">
         <div class="nav-category">Hàng Đợi Xử Lý</div>
-        <a href="#queue" id="nav-queue" class="active" onclick="switchNav('queue')">
+        <a href="#queue" id="nav-queue" class="active" onclick="switchNav('queue'); closeStaffSidebarOnMobile();">
           <span>⚡</span> Hàng Đợi Ưu Tiên (Core)
         </a>
-        <a href="#all" id="nav-all" onclick="switchNav('all')">
+        <a href="#all" id="nav-all" onclick="switchNav('all'); closeStaffSidebarOnMobile();">
           <span>📋</span> Toàn Bộ Sự Cố
         </a>
 
         <div class="nav-category">Tác Vụ Kỹ Thuật</div>
-        <a href="#my-tasks" id="nav-my-tasks" onclick="filterMyTasks()">
+        <a href="#my-tasks" id="nav-my-tasks" onclick="filterMyTasks(); closeStaffSidebarOnMobile();">
           <span>👤</span> Việc Được Giao Cho Tôi
         </a>
       </nav>
@@ -48,13 +54,16 @@
     <div class="staff-main">
       <!-- TOPBAR -->
       <header class="staff-topbar">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-          <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;" id="page-heading">
-            Hàng Đợi Xử Lý Sự Cố Theo Thứ Tự Ưu Tiên
-          </h2>
-          <span class="badge" style="background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;">
-            ● Thuật toán hoạt động
-          </span>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button class="staff-mobile-btn" onclick="toggleStaffSidebar()" title="Mở danh mục">☰</button>
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;" id="page-heading">
+              Hàng Đợi Xử Lý Sự Cố Theo Thứ Tự Ưu Tiên
+            </h2>
+            <span class="badge" style="background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; margin-top: 0.2rem; display: inline-block;">
+              ● Thuật toán hoạt động
+            </span>
+          </div>
         </div>
 
         <div style="display: flex; align-items: center; gap: 1.25rem;">
@@ -211,7 +220,7 @@
         <!-- BẢNG HÀNG ĐỢI SỰ CỐ -->
         <div class="card">
           <div class="table-responsive">
-            <table class="table">
+            <table class="table table-mobile-card">
               <thead>
                 <tr>
                   <th style="width: 60px;">Mã</th>
@@ -264,6 +273,24 @@
     let allFetchedItems = [];
     let selectedPriority = '';
     let isChartCollapsed = false;
+
+    function toggleStaffSidebar() {
+      const sidebar = document.getElementById('staff-sidebar');
+      const overlay = document.getElementById('staff-sidebar-overlay');
+      if (sidebar && overlay) {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+      }
+    }
+
+    function closeStaffSidebarOnMobile() {
+      if (window.innerWidth <= 768) {
+        const sidebar = document.getElementById('staff-sidebar');
+        const overlay = document.getElementById('staff-sidebar-overlay');
+        if (sidebar) sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('active');
+      }
+    }
 
     function toggleChartSection() {
       const body = document.getElementById('chart-section-body');
@@ -457,26 +484,26 @@
 
         return `
           <tr style="${rowBg}">
-            <td><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${inc.id}</span></td>
-            <td>
+            <td data-label="Mã sự cố"><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${inc.id}</span></td>
+            <td data-label="Mức ưu tiên">
               <div class="priority-score-cell">
                 ${Utils.renderPriorityBadge(inc.priority_level, inc.priority_score)}
               </div>
             </td>
-            <td>
+            <td data-label="Tiêu đề">
               <div style="font-weight: 700; color: #0f172a;">${Utils.escapeHtml(inc.title)}</div>
               <div style="font-size: 0.8rem; color: #64748b;">${Utils.escapeHtml(inc.description || '')}</div>
             </td>
-            <td><strong>${inc.location_name || '--'}</strong></td>
-            <td>${inc.type_name || '--'}</td>
-            <td><span style="color: #64748b; font-size: 0.825rem;">${Utils.formatDateTime(inc.reported_at)}</span></td>
-            <td>
+            <td data-label="Vị trí"><strong>${inc.location_name || '--'}</strong></td>
+            <td data-label="Loại sự cố">${inc.type_name || '--'}</td>
+            <td data-label="Thời gian"><span style="color: #64748b; font-size: 0.825rem;">${Utils.formatDateTime(inc.reported_at)}</span></td>
+            <td data-label="Phụ trách">
               ${inc.assignee_name 
                 ? `<span class="badge" style="background:#e0e7ff; color:#3730a3;">👤 ${Utils.escapeHtml(inc.assignee_name)}</span>` 
                 : '<span style="color:#94a3b8; font-size:0.8rem;">Chưa phân công</span>'}
             </td>
-            <td>${Utils.renderStatusBadge(inc.status)}</td>
-            <td style="text-align: center;">
+            <td data-label="Trạng thái">${Utils.renderStatusBadge(inc.status)}</td>
+            <td data-label="Thao tác" style="text-align: center;">
               <button class="btn btn-xs btn-primary" onclick="openActionModal(${inc.id})">
                 ⚙️ Thao tác
               </button>

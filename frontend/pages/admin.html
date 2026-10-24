@@ -11,38 +11,44 @@
 <body>
 
   <div class="admin-layout">
+    <!-- OVERLAY NỀN KHI MỞ MENU MOBILE -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleAdminSidebar()"></div>
+
     <!-- SIDEBAR -->
-    <aside class="admin-sidebar">
-      <div class="brand">
-        <img src="../assets/img/logo.svg" alt="SIMPS Logo">
-        <div>
-          <div class="brand-title">SIMPS QUẢN TRỊ</div>
-          <div class="brand-sub">Ban Quản Lý & KHKT</div>
+    <aside id="admin-sidebar" class="admin-sidebar">
+      <div class="brand" style="justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <img src="../assets/img/logo.svg" alt="SIMPS Logo">
+          <div>
+            <div class="brand-title">SIMPS QUẢN TRỊ</div>
+            <div class="brand-sub">Ban Quản Lý & KHKT</div>
+          </div>
         </div>
+        <button class="mobile-menu-btn" style="color: #cbd5e1;" onclick="toggleAdminSidebar()">✕</button>
       </div>
 
       <nav class="admin-nav">
         <div class="admin-nav-category">Giám Sát & Thống Kê</div>
-        <a href="#dashboard" id="nav-dashboard" class="active" onclick="switchAdminTab('dashboard')">
+        <a href="#dashboard" id="nav-dashboard" class="active" onclick="switchAdminTab('dashboard'); closeAdminSidebarOnMobile();">
           <span>📊</span> Bảng Điều Khiển & Biểu Đồ
         </a>
-        <a href="#incidents" id="nav-incidents" onclick="switchAdminTab('incidents')">
+        <a href="#incidents" id="nav-incidents" onclick="switchAdminTab('incidents'); closeAdminSidebarOnMobile();">
           <span>📋</span> Toàn Bộ Sự Cố Học Đường
         </a>
 
         <div class="admin-nav-category">Khoa Học & Thuật Toán</div>
-        <a href="#weights" id="nav-weights" onclick="switchAdminTab('weights')">
+        <a href="#weights" id="nav-weights" onclick="switchAdminTab('weights'); closeAdminSidebarOnMobile();">
           <span>⚙️</span> Trọng Số & Bộ Giả Lập P
         </a>
 
         <div class="admin-nav-category">Danh Mục Cơ Sở</div>
-        <a href="#locations" id="nav-locations" onclick="switchAdminTab('locations')">
+        <a href="#locations" id="nav-locations" onclick="switchAdminTab('locations'); closeAdminSidebarOnMobile();">
           <span>🏫</span> Địa Điểm & Mức Rủi Ro
         </a>
-        <a href="#types" id="nav-types" onclick="switchAdminTab('types')">
+        <a href="#types" id="nav-types" onclick="switchAdminTab('types'); closeAdminSidebarOnMobile();">
           <span>🏷️</span> Loại Sự Cố & An Toàn
         </a>
-        <a href="#users" id="nav-users" onclick="switchAdminTab('users')">
+        <a href="#users" id="nav-users" onclick="switchAdminTab('users'); closeAdminSidebarOnMobile();">
           <span>👥</span> Tài Khoản Người Dùng
         </a>
       </nav>
@@ -58,11 +64,14 @@
     <!-- MAIN CONTENT -->
     <div class="admin-main">
       <header class="admin-topbar">
-        <div>
-          <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;" id="admin-header-title">
-            Báo Cáo Thống Kê & Phân Tích Sự Cố
-          </h2>
-          <span style="font-size: 0.8rem; color: #64748b;">Dữ liệu cập nhật theo thời gian thực</span>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button class="mobile-menu-btn" onclick="toggleAdminSidebar()" title="Mở danh mục">☰</button>
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0;" id="admin-header-title">
+              Báo Cáo Thống Kê & Phân Tích Sự Cố
+            </h2>
+            <span style="font-size: 0.8rem; color: #64748b;">Dữ liệu cập nhật theo thời gian thực</span>
+          </div>
         </div>
 
         <div style="display: flex; align-items: center; gap: 1.25rem;">
@@ -285,7 +294,7 @@
               </button>
             </div>
             <div class="table-responsive">
-              <table class="table">
+              <table class="table table-mobile-card">
                 <thead>
                   <tr>
                     <th style="width: 60px;">Mã</th>
@@ -518,7 +527,7 @@
               </div>
             </div>
             <div class="table-responsive">
-              <table class="table">
+              <table class="table table-mobile-card">
                 <thead>
                   <tr>
                     <th>Mã</th>
@@ -544,7 +553,7 @@
               <button class="btn btn-sm btn-primary" onclick="openAddTypeModal()">➕ Thêm Loại Sự Cố</button>
             </div>
             <div class="table-responsive">
-              <table class="table">
+              <table class="table table-mobile-card">
                 <thead>
                   <tr>
                     <th>Mã</th>
@@ -568,7 +577,7 @@
               <button class="btn btn-sm btn-primary" onclick="openAddUserModal()">➕ Thêm Người Dùng</button>
             </div>
             <div class="table-responsive">
-              <table class="table">
+              <table class="table table-mobile-card">
                 <thead>
                   <tr>
                     <th>Mã</th>
@@ -599,6 +608,24 @@
   <script src="../js/components/notifications.js"></script>
 
   <script>
+    function toggleAdminSidebar() {
+      const sidebar = document.getElementById('admin-sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      if (sidebar && overlay) {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+      }
+    }
+
+    function closeAdminSidebarOnMobile() {
+      if (window.innerWidth <= 768) {
+        const sidebar = document.getElementById('admin-sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        if (sidebar) sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('active');
+      }
+    }
+
     const user = AuthService.checkAuth(['admin']);
     if (user) {
       document.getElementById('admin-user-name').textContent = user.full_name;
@@ -865,16 +892,16 @@
 
         tbody.innerHTML = lastFetchedAdminIncidents.map(inc => `
           <tr>
-            <td><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${inc.id}</span></td>
-            <td>${Utils.renderPriorityBadge(inc.priority_level, inc.priority_score)}</td>
-            <td><strong>${Utils.escapeHtml(inc.title)}</strong></td>
-            <td>${inc.location_name}</td>
-            <td>${inc.type_name}</td>
-            <td>${inc.reporter_name || 'Học sinh'}</td>
-            <td>${inc.assignee_name || '<span style="color:#94a3b8;">Chưa có</span>'}</td>
-            <td>${Utils.renderStatusBadge(inc.status)}</td>
-            <td><span style="color:#64748b; font-size:0.8rem;">${Utils.formatDateTime(inc.reported_at)}</span></td>
-            <td style="text-align: center;">
+            <td data-label="Mã sự cố"><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${inc.id}</span></td>
+            <td data-label="Mức ưu tiên">${Utils.renderPriorityBadge(inc.priority_level, inc.priority_score)}</td>
+            <td data-label="Tiêu đề"><strong>${Utils.escapeHtml(inc.title)}</strong></td>
+            <td data-label="Địa điểm">${inc.location_name}</td>
+            <td data-label="Loại sự cố">${inc.type_name}</td>
+            <td data-label="Người báo">${inc.reporter_name || 'Học sinh'}</td>
+            <td data-label="Kỹ thuật">${inc.assignee_name || '<span style="color:#94a3b8;">Chưa có</span>'}</td>
+            <td data-label="Trạng thái">${Utils.renderStatusBadge(inc.status)}</td>
+            <td data-label="Thời gian"><span style="color:#64748b; font-size:0.8rem;">${Utils.formatDateTime(inc.reported_at)}</span></td>
+            <td data-label="Thao tác" style="text-align: center;">
               <button class="btn btn-xs btn-outline" onclick="openAdminIncidentModal(${inc.id})">Chi tiết</button>
             </td>
           </tr>
@@ -1181,13 +1208,13 @@
         cachedLocations = res.data;
         tbody.innerHTML = res.data.map(l => `
           <tr>
-            <td><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${l.id}</span></td>
-            <td><strong>${Utils.escapeHtml(l.name)}</strong></td>
-            <td>${l.building}</td>
-            <td>${l.floor || '--'}</td>
-            <td>${Utils.renderSeverity(l.risk_level)}</td>
-            <td>${Utils.escapeHtml(l.description || '--')}</td>
-            <td style="text-align: center;">
+            <td data-label="Mã"><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${l.id}</span></td>
+            <td data-label="Khu vực"><strong>${Utils.escapeHtml(l.name)}</strong></td>
+            <td data-label="Tòa nhà">${l.building}</td>
+            <td data-label="Tầng">${l.floor || '--'}</td>
+            <td data-label="Mức rủi ro">${Utils.renderSeverity(l.risk_level)}</td>
+            <td data-label="Mô tả">${Utils.escapeHtml(l.description || '--')}</td>
+            <td data-label="Mã QR" style="text-align: center;">
               <button class="btn btn-xs btn-outline" style="border-color: #3b82f6; color: #1d4ed8; font-weight: 600;" onclick="showLocationQRModal(${l.id}, '${Utils.escapeHtml(l.name).replace(/'/g, "\\'")}', '${l.building}', ${l.risk_level})">
                 📱 Mã QR Tem
               </button>
@@ -1381,15 +1408,15 @@
         const res = await ApiService.getIncidentTypes();
         tbody.innerHTML = res.data.map(t => `
           <tr>
-            <td><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${t.id}</span></td>
-            <td><strong>${Utils.escapeHtml(t.name)}</strong></td>
-            <td>${t.default_severity}/5</td>
-            <td>
+            <td data-label="Mã"><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${t.id}</span></td>
+            <td data-label="Tên loại"><strong>${Utils.escapeHtml(t.name)}</strong></td>
+            <td data-label="Nghiêm trọng">${t.default_severity}/5</td>
+            <td data-label="An toàn">
               ${t.is_safety_critical 
                 ? '<span class="badge priority-emergency">🚨 CÓ (Safety Override)</span>' 
                 : '<span class="badge" style="background:#f1f5f9; color:#64748b;">Không</span>'}
             </td>
-            <td>${Utils.escapeHtml(t.description || '--')}</td>
+            <td data-label="Mô tả">${Utils.escapeHtml(t.description || '--')}</td>
           </tr>
         `).join('');
       } catch (err) {
@@ -1452,13 +1479,13 @@
         const res = await ApiService.getUsers();
         tbody.innerHTML = res.data.map(u => `
           <tr>
-            <td><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${u.id}</span></td>
-            <td><code>${u.username}</code></td>
-            <td><strong>${Utils.escapeHtml(u.full_name)}</strong></td>
-            <td><span class="badge ${u.role === 'admin' ? 'badge-primary' : u.role === 'staff' ? 'badge-warning' : 'badge-secondary'}">${u.role.toUpperCase()}</span></td>
-            <td>${u.class_name || '--'}</td>
-            <td>${u.email || '--'}</td>
-            <td>${u.is_active ? '<span class="badge badge-success">Hoạt động</span>' : '<span class="badge badge-danger">Vô hiệu</span>'}</td>
+            <td data-label="Mã"><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${u.id}</span></td>
+            <td data-label="Username"><code>${u.username}</code></td>
+            <td data-label="Họ tên"><strong>${Utils.escapeHtml(u.full_name)}</strong></td>
+            <td data-label="Vai trò"><span class="badge ${u.role === 'admin' ? 'badge-primary' : u.role === 'staff' ? 'badge-warning' : 'badge-secondary'}">${u.role.toUpperCase()}</span></td>
+            <td data-label="Lớp / Tổ">${u.class_name || '--'}</td>
+            <td data-label="Email">${u.email || '--'}</td>
+            <td data-label="Trạng thái">${u.is_active ? '<span class="badge badge-success">Hoạt động</span>' : '<span class="badge badge-danger">Vô hiệu</span>'}</td>
           </tr>
         `).join('');
       } catch (err) {

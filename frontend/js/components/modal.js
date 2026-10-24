@@ -32,6 +32,10 @@ class Modal {
       box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
       overflow: hidden;
       animation: modalFadeIn 0.2s ease-out;
+      margin: auto;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
     `;
 
     dialog.innerHTML = `
@@ -39,7 +43,7 @@ class Modal {
         <h3 style="margin: 0; font-size: 1.2rem; font-weight: 600; color: #1e293b;">${title}</h3>
         <button id="modal-close-btn" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #94a3b8;">&times;</button>
       </div>
-      <div style="padding: 1.5rem; max-height: 70vh; overflow-y: auto;">
+      <div style="padding: 1.25rem 1.5rem; max-height: 70vh; overflow-y: auto; flex: 1;">
         ${content}
       </div>
       <div style="padding: 1rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 0.75rem;">

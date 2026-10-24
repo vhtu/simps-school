@@ -378,10 +378,11 @@ input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.15);
 }
 
-/* === TABLES === */
+/* === TABLES & MOBILE RESPONSIVE CARDS === */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table {
@@ -398,13 +399,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
   font-size: 0.775rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 0.875rem 1.25rem;
+  padding: 0.875rem 1rem;
   text-align: left;
   border-bottom: 1px solid var(--surface-border);
+  white-space: nowrap;
 }
 
 .table td {
-  padding: 1rem 1.25rem;
+  padding: 0.875rem 1rem;
   color: var(--text-main);
   border-bottom: 1px solid var(--surface-border);
   vertical-align: middle;
@@ -419,6 +421,65 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .table tbody tr:hover td {
   background-color: #f8fafc;
 }
+
+/* Biến đổi bảng thành thẻ (Card-based view) trên điện thoại để không bị cuộn ngang */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: visible;
+  }
+
+  .table-responsive table.table-mobile-card {
+    display: block;
+    border: none;
+  }
+
+  .table-responsive table.table-mobile-card thead {
+    display: none; /* Ẩn thead trên mobile */
+  }
+
+  .table-responsive table.table-mobile-card tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .table-responsive table.table-mobile-card tr {
+    display: block;
+    background: #ffffff;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .table-responsive table.table-mobile-card td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 0;
+    border-bottom: 1px dashed #f1f5f9;
+    font-size: 0.85rem;
+  }
+
+  .table-responsive table.table-mobile-card td:last-child {
+    border-bottom: none;
+    padding-top: 0.75rem;
+    justify-content: flex-end;
+  }
+
+  .table-responsive table.table-mobile-card td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #64748b;
+    font-size: 0.775rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-right: 0.75rem;
+    text-align: left;
+    flex-shrink: 0;
+  }
+}
+
 
 /* === TIMELINE COMPONENT === */
 .timeline-stepper {
@@ -535,6 +596,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   top: calc(100% + 12px);
   right: 0;
   width: 380px;
+  max-width: 90vw;
   background: #ffffff;
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg);
@@ -543,6 +605,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
   overflow: hidden;
   animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+@media (max-width: 480px) {
+  .notif-dropdown {
+    right: -70px;
+    width: 320px;
+  }
+}
+
 
 .notif-dropdown-header {
   padding: 1rem 1.25rem;
