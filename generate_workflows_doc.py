@@ -67,7 +67,7 @@ def create_document():
     p_sub = doc.add_paragraph()
     p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r_desc = p_sub.add_run("School Incident Management and Prioritization System (SIMPS)\nThuật toán xếp hạng đa tiêu chí tuyến tính kết hợp cơ chế ghi đè an toàn (Safety Override)\n\n"
-                           "Học sinh thực hiện: Nguyễn Quốc Khánh\n"
+                           "Học sinh thực hiện: Lê Quốc Khánh và Hồ Anh Khoa\n"
                            "Giáo viên hướng dẫn (GVHD): Phan Thuý Quỳnh\n"
                            "Trường THPT Ô Môn, TP Cần Thơ")
     r_desc.font.size = Pt(11)

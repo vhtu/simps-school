@@ -45,7 +45,7 @@ def export_users_to_word():
     r_top2.font.bold = True
     r_top2.font.color.rgb = RGBColor(79, 70, 229)
 
-    r_top3 = p_top.add_run('Học sinh thực hiện: Nguyễn Quốc Khánh | GVHD: Phan Thuý Quỳnh')
+    r_top3 = p_top.add_run('Học sinh thực hiện: Lê Quốc Khánh và Hồ Anh Khoa | GVHD: Phan Thuý Quỳnh')
     r_top3.font.size = Pt(10)
     r_top3.font.italic = True
     r_top3.font.color.rgb = RGBColor(71, 85, 105)

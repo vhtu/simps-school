@@ -2,7 +2,7 @@
 > **School Incident Management and Prioritization System Based on Impact and Urgency**
 
 ### 🎓 THÔNG TIN ĐỀ TÀI KHOA HỌC KỸ THUẬT (KHKT 2026)
-* **Học sinh thực hiện**: **Nguyễn Quốc Khánh**
+* **Học sinh thực hiện**: **Lê Quốc Khánh** và **Hồ Anh Khoa**
 * **Giáo viên hướng dẫn (GVHD)**: **Phan Thuý Quỳnh**
 * **Đơn vị dự thi**: **Trường THPT Ô Môn, TP Cần Thơ**
 * **Lĩnh vực nghiên cứu**: Hệ thống nhúng & Phần mềm hệ thống (System Software)
