@@ -27,3 +27,10 @@ class RegisterRequest(BaseModel):
     role: str = "student"          # student / staff / admin
     class_name: Optional[str] = None
     email: Optional[str] = None
+
+
+class ChangePasswordRequest(BaseModel):
+    """Yêu cầu đổi mật khẩu cá nhân"""
+    old_password: str
+    new_password: str
+

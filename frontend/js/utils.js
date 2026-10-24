@@ -5,20 +5,35 @@
 
 const Utils = {
   /**
+   * Chuyển đổi chuỗi ISO thời gian UTC về đối tượng Date
+   */
+  parseUTCDate(isoString) {
+    if (!isoString) return null;
+    let s = String(isoString).trim();
+    // Nếu chuỗi thời gian chưa có định danh múi giờ Z hoặc offset +00:00, coi như là UTC
+    if (!s.endsWith('Z') && !s.includes('+') && !s.match(/-\d{2}:\d{2}$/)) {
+      s = s + 'Z';
+    }
+    const d = new Date(s);
+    return isNaN(d.getTime()) ? null : d;
+  },
+
+  /**
    * Định dạng thời gian thân thiện (vd: 10 phút trước, hôm qua, hoặc DD/MM/YYYY HH:mm)
    */
   formatDateTime(isoString) {
     if (!isoString) return '--';
-    const date = new Date(isoString);
-    if (isNaN(date.getTime())) return '--';
+    const date = this.parseUTCDate(isoString);
+    if (!date) return '--';
 
     const now = new Date();
     const diffSeconds = Math.floor((now - date) / 1000);
 
-    if (diffSeconds < 60) return 'Vừa xong';
-    if (diffSeconds < 3600) return `${Math.floor(diffSeconds / 60)} phút trước`;
-    if (diffSeconds < 86400) return `${Math.floor(diffSeconds / 3600)} giờ trước`;
-    if (diffSeconds < 259200) return `${Math.floor(diffSeconds / 86400)} ngày trước`;
+    // Xử lý lệch giây nhỏ do đồng hồ hệ thống
+    if (diffSeconds < 60 && diffSeconds >= -60) return 'Vừa xong';
+    if (diffSeconds >= 60 && diffSeconds < 3600) return `${Math.floor(diffSeconds / 60)} phút trước`;
+    if (diffSeconds >= 3600 && diffSeconds < 86400) return `${Math.floor(diffSeconds / 3600)} giờ trước`;
+    if (diffSeconds >= 86400 && diffSeconds < 259200) return `${Math.floor(diffSeconds / 86400)} ngày trước`;
 
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -82,6 +97,19 @@ const Utils = {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  },
+
+  /**
+   * Mở modal tiện ích nhanh
+   */
+  openModal(title, content, onConfirm = null) {
+    if (window.Modal) {
+      Modal.open({
+        title,
+        content,
+        onConfirm
+      });
+    }
   }
 };
 

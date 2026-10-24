@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.user import User
-from app.schemas.auth import LoginRequest, RegisterRequest
+from app.schemas.auth import LoginRequest, RegisterRequest, ChangePasswordRequest
 from app.services import auth_service
 from app.middleware.auth_middleware import get_current_user, require_role
 from app.utils.helpers import api_response
@@ -70,3 +70,37 @@ def get_me(current_user: User = Depends(get_current_user)):
         },
         message="Lấy thông tin thành công"
     )
+
+
+@router.post("/change-password", summary="Đổi mật khẩu người dùng")
+def change_password(
+    request: ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Đổi mật khẩu của người dùng đang đăng nhập.
+    """
+    from app.services.auth_service import verify_password, hash_password
+    from fastapi import HTTPException
+    
+    if not verify_password(request.old_password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Mật khẩu hiện tại không chính xác"
+        )
+    
+    if len(request.new_password) < 4:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Mật khẩu mới phải có ít nhất 4 ký tự"
+        )
+
+    current_user.password_hash = hash_password(request.new_password)
+    db.commit()
+    return api_response(
+        success=True,
+        data={"user_id": current_user.id},
+        message="Đổi mật khẩu thành công"
+    )
+

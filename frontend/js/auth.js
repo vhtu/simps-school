@@ -90,4 +90,59 @@ class AuthService {
   }
 }
 
+// Modal chung cho việc Đổi mật khẩu cá nhân
+function openSelfPasswordModal() {
+  const content = `
+    <form id="self-pass-form">
+      <div class="form-group">
+        <label class="form-label">Mật khẩu hiện tại</label>
+        <input type="password" id="self-old-pass" class="form-control" required placeholder="Nhập mật khẩu hiện tại">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mật khẩu mới</label>
+        <input type="password" id="self-new-pass" class="form-control" required placeholder="Nhập ít nhất 4 ký tự">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Xác nhận mật khẩu mới</label>
+        <input type="password" id="self-confirm-pass" class="form-control" required placeholder="Nhập lại mật khẩu mới">
+      </div>
+    </form>
+  `;
+
+  if (window.Modal) {
+    Modal.open({
+      title: '🔑 Đổi Mật Khẩu Cá Nhân',
+      content,
+      confirmText: 'Xác Nhận Đổi',
+      onConfirm: async (close) => {
+        const oldP = document.getElementById('self-old-pass').value;
+        const newP = document.getElementById('self-new-pass').value;
+        const confP = document.getElementById('self-confirm-pass').value;
+
+        if (!oldP || !newP) {
+          Toast.warning('Vui lòng điền đủ các trường');
+          return;
+        }
+        if (newP !== confP) {
+          Toast.warning('Mật khẩu xác nhận không khớp');
+          return;
+        }
+        if (newP.length < 4) {
+          Toast.warning('Mật khẩu mới phải từ 4 ký tự trở lên');
+          return;
+        }
+
+        try {
+          await ApiService.changePassword(oldP, newP);
+          Toast.success('Đổi mật khẩu thành công!');
+          close();
+        } catch (err) {
+          Toast.error(err.message || 'Lỗi đổi mật khẩu');
+        }
+      }
+    });
+  }
+}
+
+window.openSelfPasswordModal = openSelfPasswordModal;
 window.AuthService = AuthService;

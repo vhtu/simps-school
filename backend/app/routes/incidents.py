@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.user import User
-from app.schemas.incident import IncidentCreate, StatusUpdate, AssignRequest
+from app.schemas.incident import IncidentCreate, IncidentUpdate, StatusUpdate, AssignRequest
 from app.services import incident_service
 from app.middleware.auth_middleware import get_current_user, require_role
 from app.utils.helpers import api_response
@@ -193,6 +193,48 @@ def get_incident_history(
         data=history,
         message="Lấy lịch sử trạng thái thành công"
     )
+
+
+@router.put("/{incident_id}", summary="Cập nhật thông tin chi tiết sự cố")
+def update_incident(
+    incident_id: int,
+    data: IncidentUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("admin", "staff"))
+):
+    """
+    Cập nhật tiêu đề, mô tả, mức độ nghiêm trọng, phòng học... và tính lại điểm P.
+    """
+    updated = incident_service.update_incident_info(
+        db=db,
+        incident_id=incident_id,
+        data=data.model_dump(exclude_unset=True),
+        user_id=current_user.id
+    )
+    detail = incident_service.get_incident_by_id(db, incident_id)
+    return api_response(
+        success=True,
+        data=detail,
+        message="Cập nhật thông tin sự cố thành công"
+    )
+
+
+@router.delete("/{incident_id}", summary="Xóa sự cố khỏi hệ thống (Admin)")
+def delete_incident(
+    incident_id: int,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_role("admin"))
+):
+    """
+    Admin xóa sự cố và toàn bộ lịch sử liên quan.
+    """
+    res = incident_service.delete_incident(db, incident_id)
+    return api_response(
+        success=True,
+        data=res,
+        message="Đã xóa sự cố thành công"
+    )
+
 
 
 @router.post("/upload-image", summary="Upload hình ảnh minh họa sự cố")

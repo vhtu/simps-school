@@ -503,3 +503,68 @@ def _get_status_history(db: Session, incident_id: int) -> list:
             "changed_at": h.changed_at.isoformat() if h.changed_at else None,
         })
     return result
+
+
+def update_incident_info(db: Session, incident_id: int, data: dict, user_id: int) -> Incident:
+    """
+    Cập nhật nội dung sự cố (tiêu đề, mô tả, mức nghiêm trọng, phòng học...)
+    và tự động tính lại điểm ưu tiên P.
+    """
+    incident = db.query(Incident).filter(Incident.id == incident_id).first()
+    if not incident:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy sự cố"
+        )
+
+    if data.get("title"):
+        incident.title = data["title"]
+    if "description" in data:
+        incident.description = data["description"]
+    if data.get("type_id"):
+        incident.type_id = data["type_id"]
+    if data.get("location_id"):
+        incident.location_id = data["location_id"]
+    if data.get("severity"):
+        incident.severity = max(1, min(5, data["severity"]))
+    if data.get("people_affected"):
+        incident.people_affected = max(1, data["people_affected"])
+    if data.get("learning_impact"):
+        incident.learning_impact = max(1, min(5, data["learning_impact"]))
+
+    # Tự động tính lại điểm ưu tiên
+    recalculate_incident_priority(db, incident)
+
+    # Ghi log lịch sử
+    history = StatusHistory(
+        incident_id=incident.id,
+        changed_by=user_id,
+        old_status=incident.status,
+        new_status=incident.status,
+        notes="Cập nhật thông tin chi tiết sự cố",
+        changed_at=datetime.utcnow()
+    )
+    db.add(history)
+    db.commit()
+    db.refresh(incident)
+    return incident
+
+
+def delete_incident(db: Session, incident_id: int) -> dict:
+    """
+    Xóa sự cố khỏi hệ thống cùng toàn bộ lịch sử liên quan (Admin).
+    """
+    incident = db.query(Incident).filter(Incident.id == incident_id).first()
+    if not incident:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy sự cố"
+        )
+
+    # Xóa lịch sử trạng thái trước
+    db.query(StatusHistory).filter(StatusHistory.incident_id == incident_id).delete()
+    # Xóa sự cố
+    db.delete(incident)
+    db.commit()
+    return {"id": incident_id, "deleted": True}
+

@@ -245,6 +245,31 @@ class ApiService {
     });
   }
 
+  // === AUTH & PASSWORD ===
+  static changePassword(oldPassword, newPassword) {
+    return this.request('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({
+        old_password: oldPassword,
+        new_password: newPassword
+      })
+    });
+  }
+
+  // === INCIDENT UPDATE & DELETE ===
+  static updateIncident(id, data) {
+    return this.request(`/incidents/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    });
+  }
+
+  static deleteIncident(id) {
+    return this.request(`/incidents/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
   // === NOTIFICATIONS ===
   static getNotifications(params = {}) {
     const query = new URLSearchParams();

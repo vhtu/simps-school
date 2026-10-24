@@ -19,6 +19,18 @@ class IncidentCreate(BaseModel):
     image_paths: Optional[List[str]] = []  # Đường dẫn hình ảnh
 
 
+class IncidentUpdate(BaseModel):
+    """Cập nhật thông tin chi tiết sự cố"""
+    title: Optional[str] = None
+    description: Optional[str] = None
+    type_id: Optional[int] = None
+    location_id: Optional[int] = None
+    severity: Optional[int] = None
+    people_affected: Optional[int] = None
+    learning_impact: Optional[int] = None
+
+
+
 class IncidentOut(BaseModel):
     """Thông tin sự cố trả về cho client"""
     id: int
