@@ -168,6 +168,19 @@ class ApiService {
     });
   }
 
+  static updateLocation(id, locData) {
+    return this.request(`/config/locations/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(locData),
+    });
+  }
+
+  static deleteLocation(id) {
+    return this.request(`/config/locations/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   static getIncidentTypes() {
     return this.request('/config/incident-types');
   }
@@ -176,6 +189,19 @@ class ApiService {
     return this.request('/config/incident-types', {
       method: 'POST',
       body: JSON.stringify(typeData),
+    });
+  }
+
+  static updateIncidentType(id, typeData) {
+    return this.request(`/config/incident-types/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(typeData),
+    });
+  }
+
+  static deleteIncidentType(id) {
+    return this.request(`/config/incident-types/${id}`, {
+      method: 'DELETE',
     });
   }
 

@@ -537,7 +537,8 @@
                     <th>Tầng</th>
                     <th>Mức Rủi Ro (R)</th>
                     <th>Mô Tả</th>
-                    <th style="text-align: center; width: 140px;">Mã QR Báo Cáo</th>
+                    <th style="text-align: center; width: 130px;">Mã QR Báo Cáo</th>
+                    <th style="text-align: center; width: 130px;">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody id="locations-tbody"></tbody>
@@ -562,6 +563,7 @@
                     <th>Nghiêm Trọng Mặc Định (S)</th>
                     <th>Quy Tắc An Toàn (Safety Override)</th>
                     <th>Mô Tả</th>
+                    <th style="text-align: center; width: 130px;">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody id="types-tbody"></tbody>
@@ -1227,7 +1229,7 @@
     let cachedLocations = [];
     async function loadLocations() {
       const tbody = document.getElementById('locations-tbody');
-      tbody.innerHTML = '<tr><td colspan="7" class="text-center">Đang tải...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center">Đang tải...</td></tr>';
       try {
         const res = await ApiService.getLocations();
         cachedLocations = res.data;
@@ -1244,12 +1246,97 @@
                 📱 Mã QR Tem
               </button>
             </td>
+            <td data-label="Thao tác" style="text-align: center;">
+              <div style="display: inline-flex; gap: 4px;">
+                <button type="button" class="btn btn-xs btn-outline" onclick="openEditLocationModal(${l.id})">Sửa</button>
+                <button type="button" class="btn btn-xs btn-outline" style="color: #dc2626;" onclick="deleteLocationItem(${l.id}, '${Utils.escapeHtml(l.name).replace(/'/g, "\\'")}')">Xóa</button>
+              </div>
+            </td>
           </tr>
         `).join('');
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">${err.message}</td></tr>`;
       }
     }
+
+    // Modal Sửa Địa Điểm & Mức Rủi Ro
+    function openEditLocationModal(id) {
+      const loc = cachedLocations.find(l => l.id === id);
+      if (!loc) return;
+
+      const content = `
+        <form id="edit-loc-form">
+          <div class="form-group">
+            <label class="form-label">Tên khu vực / phòng học</label>
+            <input type="text" id="edit-loc-name" class="form-control" value="${Utils.escapeHtml(loc.name)}" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tòa nhà</label>
+              <input type="text" id="edit-loc-bldg" class="form-control" value="${Utils.escapeHtml(loc.building || '')}" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tầng</label>
+              <input type="text" id="edit-loc-floor" class="form-control" value="${Utils.escapeHtml(loc.floor || '')}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mức độ rủi ro khu vực (R: 1-5)</label>
+            <select id="edit-loc-risk" class="form-control">
+              <option value="1" ${loc.risk_level === 1 ? 'selected' : ''}>1 - Rất thấp (Thư viện, phòng đọc)</option>
+              <option value="2" ${loc.risk_level === 2 ? 'selected' : ''}>2 - Bình thường (Phòng học thông thường)</option>
+              <option value="3" ${loc.risk_level === 3 ? 'selected' : ''}>3 - Trung bình (Hội trường, nhà vệ sinh)</option>
+              <option value="4" ${loc.risk_level === 4 ? 'selected' : ''}>4 - Cao (Phòng máy tính, xưởng thực hành)</option>
+              <option value="5" ${loc.risk_level === 5 ? 'selected' : ''}>5 - Cực kỳ nguy hiểm (Phòng thí nghiệm Hóa, trạm điện)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mô tả thêm</label>
+            <textarea id="edit-loc-desc" class="form-control" rows="2">${Utils.escapeHtml(loc.description || '')}</textarea>
+          </div>
+        </form>
+      `;
+
+      Modal.open({
+        title: `Cập nhật địa điểm: ${loc.name}`,
+        content,
+        confirmText: 'Lưu Địa Điểm',
+        onConfirm: async (close) => {
+          const payload = {
+            name: document.getElementById('edit-loc-name').value.trim(),
+            building: document.getElementById('edit-loc-bldg').value.trim(),
+            floor: document.getElementById('edit-loc-floor').value.trim(),
+            risk_level: parseInt(document.getElementById('edit-loc-risk').value),
+            description: document.getElementById('edit-loc-desc').value.trim()
+          };
+          if (!payload.name || !payload.building) {
+            Toast.warning('Vui lòng điền đủ tên và tòa nhà');
+            return;
+          }
+          try {
+            await ApiService.updateLocation(id, payload);
+            Toast.success('Cập nhật địa điểm và tính lại điểm ưu tiên thành công!');
+            close();
+            loadLocations();
+          } catch (err) {
+            Toast.error(err.message);
+          }
+        }
+      });
+    }
+
+    // Xóa Địa Điểm
+    async function deleteLocationItem(id, name) {
+      if (!confirm(`Bạn có chắc muốn xóa địa điểm '${name}'?`)) return;
+      try {
+        await ApiService.deleteLocation(id);
+        Toast.success(`Đã xóa địa điểm '${name}'`);
+        loadLocations();
+      } catch (err) {
+        Toast.error(err.message);
+      }
+    }
+
 
     function showLocationQRModal(id) {
       const location = cachedLocations.find(l => l.id === id);
@@ -1435,11 +1522,13 @@
     }
 
     // 5. Types
+    let cachedTypes = [];
     async function loadTypes() {
       const tbody = document.getElementById('types-tbody');
-      tbody.innerHTML = '<tr><td colspan="5" class="text-center">Đang tải...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center">Đang tải...</td></tr>';
       try {
         const res = await ApiService.getIncidentTypes();
+        cachedTypes = res.data;
         tbody.innerHTML = res.data.map(t => `
           <tr>
             <td data-label="Mã"><span style="font-family: var(--font-mono); font-weight: 700; color: #64748b;">#${t.id}</span></td>
@@ -1451,12 +1540,87 @@
                 : '<span class="badge" style="background:#f1f5f9; color:#64748b;">Không</span>'}
             </td>
             <td data-label="Mô tả">${Utils.escapeHtml(t.description || '--')}</td>
+            <td data-label="Thao tác" style="text-align: center;">
+              <div style="display: inline-flex; gap: 4px;">
+                <button type="button" class="btn btn-xs btn-outline" onclick="openEditTypeModal(${t.id})">Sửa</button>
+                <button type="button" class="btn btn-xs btn-outline" style="color: #dc2626;" onclick="deleteTypeItem(${t.id}, '${Utils.escapeHtml(t.name).replace(/'/g, "\\'")}')">Xóa</button>
+              </div>
+            </td>
           </tr>
         `).join('');
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">${err.message}</td></tr>`;
       }
     }
+
+    // Modal Sửa Loại Sự Cố
+    function openEditTypeModal(id) {
+      const t = cachedTypes.find(item => item.id === id);
+      if (!t) return;
+
+      const content = `
+        <form id="edit-type-form">
+          <div class="form-group">
+            <label class="form-label">Tên danh mục sự cố</label>
+            <input type="text" id="edit-type-name" class="form-control" value="${Utils.escapeHtml(t.name)}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mức nghiêm trọng mặc định (1-5)</label>
+            <input type="number" id="edit-type-sev" class="form-control" min="1" max="5" value="${t.default_severity}">
+          </div>
+          <div class="form-group">
+            <label style="display:flex; align-items:center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" id="edit-type-safety" ${t.is_safety_critical ? 'checked' : ''}>
+              <strong>Kích hoạt quy tắc An Toàn Đặc Biệt (Safety Override)</strong>
+            </label>
+            <small style="color: #64748b; font-size: 0.775rem;">Khi chọn, sự cố thuộc danh mục này sẽ luôn xếp hạng Khẩn cấp (P = 999).</small>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mô tả</label>
+            <textarea id="edit-type-desc" class="form-control" rows="2">${Utils.escapeHtml(t.description || '')}</textarea>
+          </div>
+        </form>
+      `;
+
+      Modal.open({
+        title: `Cập nhật danh mục: ${t.name}`,
+        content,
+        confirmText: 'Lưu Loại Sự Cố',
+        onConfirm: async (close) => {
+          const payload = {
+            name: document.getElementById('edit-type-name').value.trim(),
+            default_severity: parseInt(document.getElementById('edit-type-sev').value),
+            is_safety_critical: document.getElementById('edit-type-safety').checked,
+            description: document.getElementById('edit-type-desc').value.trim()
+          };
+          if (!payload.name) {
+            Toast.warning('Vui lòng nhập tên loại sự cố');
+            return;
+          }
+          try {
+            await ApiService.updateIncidentType(id, payload);
+            Toast.success('Cập nhật loại sự cố và tính lại điểm ưu tiên thành công!');
+            close();
+            loadTypes();
+          } catch (err) {
+            Toast.error(err.message);
+          }
+        }
+      });
+    }
+
+    // Xóa Loại Sự Cố
+    async function deleteTypeItem(id, name) {
+      if (!confirm(`Bạn có chắc muốn xóa loại sự cố '${name}'?`)) return;
+      try {
+        await ApiService.deleteIncidentType(id);
+        Toast.success(`Đã xóa loại sự cố '${name}'`);
+        loadTypes();
+      } catch (err) {
+        Toast.error(err.message);
+      }
+    }
+
 
     function openAddTypeModal() {
       const content = `

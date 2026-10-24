@@ -12,7 +12,10 @@ from app.models.user import User
 from app.models.location import Location
 from app.models.incident_type import IncidentType
 from app.models.survey import SystemConfig
-from app.schemas.incident import LocationOut, LocationCreate, IncidentTypeOut, IncidentTypeCreate
+from app.schemas.incident import (
+    LocationOut, LocationCreate, LocationUpdate,
+    IncidentTypeOut, IncidentTypeCreate, IncidentTypeUpdate
+)
 from app.services import priority_service
 from app.middleware.auth_middleware import get_current_user, require_role
 from app.utils.helpers import api_response
@@ -137,6 +140,82 @@ def create_location(
     )
 
 
+@router.put("/locations/{location_id}", summary="Cập nhật địa điểm & mức rủi ro (Admin)")
+def update_location(
+    location_id: int,
+    data: LocationUpdate,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_role("admin"))
+):
+    """
+    Cập nhật tên, tòa nhà, tầng lầu, mô tả và hệ số rủi ro R của địa điểm.
+    """
+    location = db.query(Location).filter(Location.id == location_id).first()
+    if not location:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy địa điểm"
+        )
+
+    if data.name is not None:
+        location.name = data.name
+    if data.building is not None:
+        location.building = data.building
+    if data.floor is not None:
+        location.floor = data.floor
+    if data.risk_level is not None:
+        location.risk_level = max(1, min(5, data.risk_level))
+    if data.description is not None:
+        location.description = data.description
+
+    db.commit()
+    db.refresh(location)
+
+    # Tính toán lại ưu tiên các sự cố mở tại phòng này nếu mức rủi ro thay đổi
+    priority_service.recalculate_all_open_incidents(db)
+
+    return api_response(
+        success=True,
+        data=LocationOut.model_validate(location).model_dump(),
+        message="Cập nhật địa điểm thành công"
+    )
+
+
+@router.delete("/locations/{location_id}", summary="Xóa địa điểm (Admin)")
+def delete_location(
+    location_id: int,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_role("admin"))
+):
+    """
+    Xóa địa điểm khỏi hệ thống nếu chưa có sự cố ràng buộc.
+    """
+    from app.models.incident import Incident
+    location = db.query(Location).filter(Location.id == location_id).first()
+    if not location:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy địa điểm"
+        )
+
+    # Kiểm tra xem có sự cố nào gắn với địa điểm này không
+    has_incidents = db.query(Incident).filter(Incident.location_id == location_id).count()
+    if has_incidents > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Không thể xóa địa điểm này vì đang có {has_incidents} sự cố liên quan"
+        )
+
+    db.delete(location)
+    db.commit()
+    return api_response(
+        success=True,
+        data={"id": location_id},
+        message="Xóa địa điểm thành công"
+    )
+
+
+
 # === QUẢN LÝ LOẠI SỰ CỐ (INCIDENT TYPES) ===
 
 @router.get("/incident-types", summary="Lấy danh sách các loại sự cố")
@@ -176,3 +255,76 @@ def create_incident_type(
         data=IncidentTypeOut.model_validate(inc_type).model_dump(),
         message="Thêm loại sự cố thành công"
     )
+
+
+@router.put("/incident-types/{type_id}", summary="Cập nhật loại sự cố & quy tắc an toàn (Admin)")
+def update_incident_type(
+    type_id: int,
+    data: IncidentTypeUpdate,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_role("admin"))
+):
+    """
+    Cập nhật tên, mức nghiêm trọng mặc định và quy tắc an toàn đặc biệt (Safety Override).
+    """
+    inc_type = db.query(IncidentType).filter(IncidentType.id == type_id).first()
+    if not inc_type:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy loại sự cố"
+        )
+
+    if data.name is not None:
+        inc_type.name = data.name
+    if data.default_severity is not None:
+        inc_type.default_severity = max(1, min(5, data.default_severity))
+    if data.description is not None:
+        inc_type.description = data.description
+    if data.is_safety_critical is not None:
+        inc_type.is_safety_critical = data.is_safety_critical
+
+    db.commit()
+    db.refresh(inc_type)
+
+    # Tính toán lại ưu tiên các sự cố mở
+    priority_service.recalculate_all_open_incidents(db)
+
+    return api_response(
+        success=True,
+        data=IncidentTypeOut.model_validate(inc_type).model_dump(),
+        message="Cập nhật loại sự cố thành công"
+    )
+
+
+@router.delete("/incident-types/{type_id}", summary="Xóa loại sự cố (Admin)")
+def delete_incident_type(
+    type_id: int,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_role("admin"))
+):
+    """
+    Xóa loại sự cố khỏi hệ thống nếu chưa có sự cố ràng buộc.
+    """
+    from app.models.incident import Incident
+    inc_type = db.query(IncidentType).filter(IncidentType.id == type_id).first()
+    if not inc_type:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy loại sự cố"
+        )
+
+    has_incidents = db.query(Incident).filter(Incident.type_id == type_id).count()
+    if has_incidents > 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Không thể xóa loại sự cố này vì đang có {has_incidents} sự cố liên quan"
+        )
+
+    db.delete(inc_type)
+    db.commit()
+    return api_response(
+        success=True,
+        data={"id": type_id},
+        message="Xóa loại sự cố thành công"
+    )
+

@@ -108,6 +108,15 @@ class LocationCreate(BaseModel):
     description: Optional[str] = None
 
 
+class LocationUpdate(BaseModel):
+    """Cập nhật địa điểm"""
+    name: Optional[str] = None
+    building: Optional[str] = None
+    floor: Optional[str] = None
+    risk_level: Optional[int] = None
+    description: Optional[str] = None
+
+
 class IncidentTypeOut(BaseModel):
     """Thông tin loại sự cố"""
     id: int
@@ -125,3 +134,12 @@ class IncidentTypeCreate(BaseModel):
     default_severity: int = 1
     description: Optional[str] = None
     is_safety_critical: bool = False
+
+
+class IncidentTypeUpdate(BaseModel):
+    """Cập nhật loại sự cố"""
+    name: Optional[str] = None
+    default_severity: Optional[int] = None
+    description: Optional[str] = None
+    is_safety_critical: Optional[bool] = None
+
