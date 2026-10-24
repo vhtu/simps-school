@@ -1,5 +1,5 @@
-# Hệ Thống Quản Lý Và Ưu Tiên Xử Lý Sự Cố Trong Trường Học (SIMPS)
-> **School Incident Management and Prioritization System Based on Impact and Urgency**
+# Nghiên cứu, phát triển hệ thống tiếp nhận và tự động xếp hạng ưu tiên xử lý sự cố cơ sở vật chất trường học dựa trên thuật toán đa tiêu chí (SIMPS)
+> **School Incident Management and Prioritization System (SIMPS)**
 
 ### 🎓 THÔNG TIN ĐỀ TÀI KHOA HỌC KỸ THUẬT (KHKT 2026)
 * **Học sinh thực hiện**: **Lê Quốc Khánh** và **Hồ Anh Khoa**
@@ -75,6 +75,9 @@ Mở terminal tại thư mục dự án và chạy:
 cd D:\KHKT\backend
 gõ lệnh
 python -m uvicorn app.main:app --reload --port 8000
+hoặc
+py -m uvicorn app.main:app --reload --port 8000
+
 ```
 - API Docs tự động (Swagger UI): **http://localhost:8000/docs**
 - Health Check: **http://localhost:8000/api/health**
@@ -104,3 +107,5 @@ Kết quả kiểm tra tự động độ chính xác của chuẩn hóa thời 
 cd D:\KHKT\
 gõ lệnh
 python -c "import sys; from sqlite_web.sqlite_web import main; sys.argv=['sqlite_web', r'D:\KHKT\backend\simps.db', '--port', '8080', '-H', '0.0.0.0', '-x']; main()"
+hoặc
+py -c "import sys; from sqlite_web.sqlite_web import main; sys.argv=['sqlite_web', r'D:\KHKT\backend\simps.db', '--port', '8080', '-H', '0.0.0.0', '-x']; main()"

@@ -46,8 +46,8 @@ def create_manual():
     p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_title.paragraph_format.space_before = Pt(10)
     p_title.paragraph_format.space_after = Pt(4)
-    r_title = p_title.add_run("TÀI LIỆU HƯỚNG DẪN SỬ DỤNG HỆ THỐNG SIMPS\n(School Incident Management and Prioritization System)")
-    r_title.font.size = Pt(16)
+    r_title = p_title.add_run("TÀI LIỆU HƯỚNG DẪN SỬ DỤNG HỆ THỐNG SIMPS\nĐỀ TÀI: NGHIÊN CỨU, PHÁT TRIỂN HỆ THỐNG TIẾP NHẬN VÀ TỰ ĐỘNG XẾP HẠNG ƯU TIÊN XỬ LÝ SỰ CỐ CƠ SỞ VẬT CHẤT TRƯỜNG HỌC DỰA TRÊN THUẬT TOÁN ĐA TIÊU CHÍ (SIMPS)")
+    r_title.font.size = Pt(14)
     r_title.font.bold = True
     r_title.font.color.rgb = RGBColor(30, 58, 138)
 

@@ -1,5 +1,5 @@
 # TÀI LIỆU HƯỚNG DẪN SỬ DỤNG HỆ THỐNG SIMPS
-> **Hệ Thống Quản Lý Và Ưu Tiên Xử Lý Sự Cố Trong Trường Học (SIMPS)**  
+> **Đề tài: Nghiên cứu, phát triển hệ thống tiếp nhận và tự động xếp hạng ưu tiên xử lý sự cố cơ sở vật chất trường học dựa trên thuật toán đa tiêu chí (SIMPS)**  
 > **School Incident Management and Prioritization System**  
 > *Đề tài Nghiên cứu Khoa học Kỹ thuật (KHKT 2026)*
 

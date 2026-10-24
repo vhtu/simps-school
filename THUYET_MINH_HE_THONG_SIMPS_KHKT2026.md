@@ -4,8 +4,8 @@
 ---
 
 # TÊN ĐỀ TÀI:
-# HỆ THỐNG QUẢN LÝ VÀ ƯU TIÊN XỬ LÝ SỰ CỐ CƠ SỞ VẬT CHẤT TRONG TRƯỜNG HỌC (SIMPS)
-### *School Incident Management and Prioritization System Based on Multi-Criteria Scoring & Safety Override*
+# NGHIÊN CỨU, PHÁT TRIỂN HỆ THỐNG TIẾP NHẬN VÀ TỰ ĐỘNG XẾP HẠNG ƯU TIÊN XỬ LÝ SỰ CỐ CƠ SỞ VẬT CHẤT TRƯỜNG HỌC DỰA TRÊN THUẬT TOÁN ĐA TIÊU CHÍ (SIMPS)
+### *Research and Development of School Incident Management and Prioritization System Based on Multi-Criteria Decision Algorithm (SIMPS)*
 
 * **Lĩnh vực dự thi**: Hệ thống nhúng & Phần mềm hệ thống (Systems Software)
 * **Đơn vị dự thi**: Trường THPT Ô Môn, Thành phố Cần Thơ
@@ -38,9 +38,10 @@
 
 ## PHẦN 1. THÔNG TIN CHUNG VỀ SẢN PHẨM
 
-* **Tên sản phẩm**: Hệ thống Quản lý và Ưu tiên Xử lý Sự cố Cơ sở vật chất Trường học (SIMPS - *School Incident Management and Prioritization System*).
+* **Tên chính thức của đề tài**: **Nghiên cứu, phát triển hệ thống tiếp nhận và tự động xếp hạng ưu tiên xử lý sự cố cơ sở vật chất trường học dựa trên thuật toán đa tiêu chí (SIMPS)**.
+* **Tên tiếng Anh**: *School Incident Management and Prioritization System (SIMPS)*.
 * **Đơn vị thực hiện**: Nhóm nghiên cứu học sinh Trường THPT Ô Môn, Thành phố Cần Thơ.
-* **Tác giả đề tài**: Lê Quốc Khánh và Hồ Anh Khoa (Học sinh lớp 10, Trường THPT Ô Môn).
+* **Tác giả đề tài**: Lê Quốc Khánh và Hồ Anh Khoa (Học sinh Trường THPT Ô Môn).
 * **Giáo viên hướng dẫn**: Phan Thuý Quỳnh.
 * **Lĩnh vực ứng dụng**: Quản trị cơ sở vật chất học đường, Chuyển đổi số giáo dục (EdTech / Smart Campus), Phần mềm hệ thống và An toàn trường học.
 * **Đối tượng sử dụng**:
