@@ -35,15 +35,20 @@ def export_users_to_word():
 
     # Tiêu đề trên cùng
     p_top = doc.add_paragraph()
-    r_top1 = p_top.add_run('CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC\n')
+    r_top1 = p_top.add_run('CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC NĂM 2026\nĐƠN VỊ: TRƯỜNG THPT Ô MÔN, TP CẦN THƠ\n')
     r_top1.font.size = Pt(10)
     r_top1.font.bold = True
     r_top1.font.color.rgb = RGBColor(100, 116, 139)
 
-    r_top2 = p_top.add_run('HỆ THỐNG QUẢN LÝ VÀ ƯU TIÊN SỰ CỐ TRƯỜNG HỌC (SIMPS)')
+    r_top2 = p_top.add_run('HỆ THỐNG QUẢN LÝ VÀ ƯU TIÊN SỰ CỐ TRƯỜNG HỌC (SIMPS)\n')
     r_top2.font.size = Pt(11)
     r_top2.font.bold = True
     r_top2.font.color.rgb = RGBColor(79, 70, 229)
+
+    r_top3 = p_top.add_run('Học sinh thực hiện: Nguyễn Quốc Khánh | GVHD: Phan Thuý Quỳnh')
+    r_top3.font.size = Pt(10)
+    r_top3.font.italic = True
+    r_top3.font.color.rgb = RGBColor(71, 85, 105)
 
     # Tiêu đề chính
     p_title = doc.add_paragraph()
@@ -69,7 +74,7 @@ def export_users_to_word():
     
     r_url_lbl = p_info.add_run('• Địa chỉ truy cập hệ thống (Web App): ')
     r_url_lbl.font.bold = True
-    r_url = p_info.add_run('http://localhost:8000\n')
+    r_url = p_info.add_run('https://simps-school.vercel.app (Online) | http://localhost:8000 (Local)\n')
     r_url.font.bold = True
     r_url.font.color.rgb = RGBColor(79, 70, 229)
 

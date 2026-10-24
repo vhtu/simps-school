@@ -51,7 +51,7 @@ def create_document():
     # --- TIÊU ĐỀ BÌA TÀI LIỆU ---
     p_header = doc.add_paragraph()
     p_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_sub = p_header.add_run("CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC NĂM 2026\nLĨNH VỰC: HỆ THỐNG NHÚNG & PHẦN MỀM HỆ THỐNG\n")
+    r_sub = p_header.add_run("CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC NĂM 2026\nĐƠN VỊ: TRƯỜNG THPT Ô MÔN, TP CẦN THƠ\nLĨNH VỰC: HỆ THỐNG NHÚNG & PHẦN MỀM HỆ THỐNG\n")
     r_sub.font.size = Pt(10)
     r_sub.font.bold = True
     r_sub.font.color.rgb = RGBColor(100, 116, 139)
@@ -66,7 +66,10 @@ def create_document():
 
     p_sub = doc.add_paragraph()
     p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_desc = p_sub.add_run("School Incident Management and Prioritization System (SIMPS)\nThuật toán xếp hạng đa tiêu chí tuyến tính kết hợp cơ chế ghi đè an toàn (Safety Override)")
+    r_desc = p_sub.add_run("School Incident Management and Prioritization System (SIMPS)\nThuật toán xếp hạng đa tiêu chí tuyến tính kết hợp cơ chế ghi đè an toàn (Safety Override)\n\n"
+                           "Học sinh thực hiện: Nguyễn Quốc Khánh\n"
+                           "Giáo viên hướng dẫn (GVHD): Phan Thuý Quỳnh\n"
+                           "Trường THPT Ô Môn, TP Cần Thơ")
     r_desc.font.size = Pt(11)
     r_desc.font.italic = True
     r_desc.font.color.rgb = RGBColor(71, 85, 105)

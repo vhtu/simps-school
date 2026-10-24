@@ -41,7 +41,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 # Khởi tạo FastAPI app
 app = FastAPI(
     title="SIMPS - Hệ thống Quản lý và Ưu tiên Xử lý Sự cố Trường học",
-    description="API cho đề tài KHKT: Xây dựng hệ thống quản lý và ưu tiên xử lý sự cố trong trường học dựa trên mức độ ảnh hưởng và mức độ khẩn cấp.",
+    description="Đề tài Nghiên cứu Khoa học Kỹ thuật (KHKT 2026) - Trường THPT Ô Môn, TP Cần Thơ. Học sinh thực hiện: Nguyễn Quốc Khánh | Giáo viên hướng dẫn (GVHD): Phan Thuý Quỳnh.",
     version="1.0.0",
 )
 

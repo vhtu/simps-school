@@ -1,7 +1,11 @@
 # Hệ Thống Quản Lý Và Ưu Tiên Xử Lý Sự Cố Trong Trường Học (SIMPS)
 > **School Incident Management and Prioritization System Based on Impact and Urgency**
 
-Dự án nghiên cứu Khoa học Kỹ thuật (KHKT) dành cho học sinh Trung học phổ thông — Lĩnh vực: **Phần mềm hệ thống**.
+### 🎓 THÔNG TIN ĐỀ TÀI KHOA HỌC KỸ THUẬT (KHKT 2026)
+* **Học sinh thực hiện**: **Nguyễn Quốc Khánh**
+* **Giáo viên hướng dẫn (GVHD)**: **Phan Thuý Quỳnh**
+* **Đơn vị dự thi**: **Trường THPT Ô Môn, TP Cần Thơ**
+* **Lĩnh vực nghiên cứu**: Hệ thống nhúng & Phần mềm hệ thống (System Software)
 
 ---
 
