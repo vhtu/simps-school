@@ -177,6 +177,21 @@
         </div>
 
         <div class="card-body">
+          <!-- BANNER THÔNG BÁO TỰ ĐỘNG NHẬN DIỆN PHÒNG HỌC QUA QR -->
+          <div id="qr-detected-notice" style="display: none; background: #ecfdf5; border: 1.5px solid #10b981; border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 1.5rem; align-items: center; gap: 1rem;">
+            <div style="font-size: 2rem;">📱</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 800; color: #065f46; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span>QUÉT QR THÀNH CÔNG: ĐÃ TỰ ĐỘNG ĐỊNH VỊ PHÒNG HỌC!</span>
+                <span class="badge badge-success" style="font-size: 0.75rem;">1-Touch Fast Report</span>
+              </div>
+              <p id="qr-location-text" style="font-size: 0.85rem; color: #047857; margin-top: 0.25rem; margin-bottom: 0;">
+                Hệ thống đã nhận diện chính xác vị trí của bạn tại trường THPT Ô Môn.
+              </p>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline" style="border-color: #10b981; color: #065f46;" onclick="clearQRLocation()">Đổi phòng</button>
+          </div>
+
           <form id="incident-form">
             <!-- Tiêu đề -->
             <div class="form-group">
@@ -384,9 +399,43 @@
           opt.textContent = `${l.name} (${l.building} • Rủi ro: ${l.risk_level}/5)`;
           locSelect.appendChild(opt);
         });
+
+        // Kiểm tra URL query params (?loc=ID hoặc ?location_id=ID) từ quét tem mã QR
+        checkQRCodeParam(locsRes.data);
       } catch (err) {
         console.error('Lỗi danh mục:', err);
       }
+    }
+
+    // Xử lý tự động khi học sinh quét tem QR phòng học
+    function checkQRCodeParam(locationsList) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const locId = urlParams.get('loc') || urlParams.get('location_id');
+      if (locId) {
+        const locSelect = document.getElementById('incident-location');
+        if (locSelect) {
+          locSelect.value = locId;
+        }
+        const matched = locationsList ? locationsList.find(l => String(l.id) === String(locId)) : null;
+        const banner = document.getElementById('qr-detected-notice');
+        const text = document.getElementById('qr-location-text');
+        if (banner) {
+          banner.style.display = 'flex';
+          if (matched && text) {
+            text.innerHTML = `Vị trí: <strong>${Utils.escapeHtml(matched.name)}</strong> (${matched.building}, Tầng ${matched.floor || '1'} • Hệ số rủi ro R = ${matched.risk_level}/5).`;
+          }
+        }
+        // Chuyển ngay đến tab Tạo Báo Cáo Sự Cố
+        switchTab('create');
+        Toast.success('Đã tự động xác định vị trí phòng học từ mã QR!');
+      }
+    }
+
+    function clearQRLocation() {
+      const banner = document.getElementById('qr-detected-notice');
+      if (banner) banner.style.display = 'none';
+      const locSelect = document.getElementById('incident-location');
+      if (locSelect) locSelect.value = '';
     }
 
     // Set Status Filter Chip

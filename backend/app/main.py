@@ -65,6 +65,30 @@ def health_check():
     )
 
 
+@app.get("/api/debug-db", summary="Kiểm tra kết nối CSDL và chẩn đoán lỗi")
+def debug_db():
+    import traceback
+    try:
+        from app.config import DATABASE_URL, IS_VERCEL
+        from app.database import engine
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT 1")).fetchone()
+        return {
+            "success": True,
+            "is_vercel": IS_VERCEL,
+            "db_type": str(engine.url).split(":")[0],
+            "db_host": engine.url.host,
+            "select_1": result[0] if result else None
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }
+
+
 # Phục vụ toàn bộ giao diện Frontend (Single Unified Port 8000)
 FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend"))
 if os.path.exists(FRONTEND_DIR):

@@ -109,3 +109,20 @@ def get_by_staff(
         message="Lấy thống kê hiệu suất theo nhân viên thành công"
     )
 
+
+@router.get("/maintenance-recommendations", summary="Khuyến nghị bảo trì phòng ngừa & Tối ưu ngân sách")
+def get_maintenance_recommendations(
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_role("admin", "staff"))
+):
+    """
+    Phân tích tần suất hỏng hóc lặp lại để khuyến nghị thay thế thiết bị hoặc đại tu phòng học.
+    """
+    recommendations = stats_service.get_maintenance_recommendations(db)
+    return api_response(
+        success=True,
+        data=recommendations,
+        message="Tạo khuyến nghị bảo trì cơ sở vật chất thành công"
+    )
+
+

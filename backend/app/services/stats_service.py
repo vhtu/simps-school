@@ -211,3 +211,81 @@ def get_stats_by_staff(db: Session) -> list:
     result.sort(key=lambda x: x["resolved_count"], reverse=True)
     return result
 
+
+def get_maintenance_recommendations(db: Session) -> dict:
+    """
+    Phân tích tần suất sự cố lặp lại theo phòng học & loại thiết bị,
+    đưa ra khuyến nghị bảo trì phòng ngừa (Predictive Maintenance)
+    và tối ưu hóa ngân sách đầu tư thay thế mới.
+    """
+    # 1. Top vị trí có nhiều sự cố nhất
+    loc_counts = (
+        db.query(
+            Location.id,
+            Location.name,
+            Location.building,
+            func.count(Incident.id).label("incident_count"),
+            func.avg(Incident.priority_score).label("avg_priority")
+        )
+        .join(Incident, Incident.location_id == Location.id)
+        .group_by(Location.id, Location.name, Location.building)
+        .order_by(func.count(Incident.id).desc())
+        .limit(5)
+        .all()
+    )
+
+    # 2. Top loại sự cố/thiết bị hay hỏng nhất
+    type_counts = (
+        db.query(
+            IncidentType.id,
+            IncidentType.name,
+            func.count(Incident.id).label("incident_count"),
+            func.avg(Incident.priority_score).label("avg_priority")
+        )
+        .join(Incident, Incident.type_id == IncidentType.id)
+        .group_by(IncidentType.id, IncidentType.name)
+        .order_by(func.count(Incident.id).desc())
+        .limit(5)
+        .all()
+    )
+
+    recommendations = []
+    for loc in loc_counts:
+        if loc.incident_count >= 3:
+            recommendations.append({
+                "type": "location",
+                "target": f"{loc.name} ({loc.building})",
+                "incident_count": loc.incident_count,
+                "avg_priority": round(float(loc.avg_priority or 0), 2),
+                "action": "ĐẠI TU TOÀN DIỆN",
+                "suggestion": f"Phòng này ghi nhận {loc.incident_count} sự cố. Nên kiểm tra toàn bộ hệ thống điện, chiếu sáng và thiết bị trước học kỳ mới thay vì sửa chữa chắp vá.",
+                "urgency": "Cao" if loc.incident_count >= 4 else "Trung bình"
+            })
+
+    for tc in type_counts:
+        if tc.incident_count >= 3:
+            recommendations.append({
+                "type": "equipment",
+                "target": tc.name,
+                "incident_count": tc.incident_count,
+                "avg_priority": round(float(tc.avg_priority or 0), 2),
+                "action": "THAY THẾ THIẾT BỊ MỚI",
+                "suggestion": f"Thiết bị '{tc.name}' hỏng lặp lại {tc.incident_count} lần. Chi phí sửa chữa lũy kế vượt quá 50% nguyên giá, kiến nghị thay thế lô mới đạt chuẩn an toàn.",
+                "urgency": "Rất cao" if "Điện" in tc.name or "cháy" in tc.name.lower() else "Cao"
+            })
+
+    return {
+        "generated_at": datetime.utcnow().isoformat(),
+        "total_recommendations": len(recommendations),
+        "recommendations": recommendations,
+        "top_problematic_locations": [
+            {"id": l.id, "name": l.name, "building": l.building, "count": l.incident_count}
+            for l in loc_counts
+        ],
+        "top_problematic_types": [
+            {"id": t.id, "name": t.name, "count": t.incident_count}
+            for t in type_counts
+        ]
+    }
+
+

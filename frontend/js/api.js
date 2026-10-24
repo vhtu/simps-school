@@ -215,6 +215,10 @@ class ApiService {
     return this.request('/stats/by-staff');
   }
 
+  static getMaintenanceRecommendations() {
+    return this.request('/stats/maintenance-recommendations');
+  }
+
   // === USERS ===
   static getUsers(params = {}) {
     const query = new URLSearchParams(params).toString();
