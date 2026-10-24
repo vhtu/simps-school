@@ -184,7 +184,9 @@ class NotificationManager {
     this.closeDropdown();
 
     if (incidentId) {
-      if (typeof window.openActionModal === 'function') {
+      if (typeof window.openAdminIncidentModal === 'function') {
+        window.openAdminIncidentModal(incidentId);
+      } else if (typeof window.openActionModal === 'function') {
         window.openActionModal(incidentId);
       } else if (typeof window.viewDetail === 'function') {
         window.viewDetail(incidentId);
