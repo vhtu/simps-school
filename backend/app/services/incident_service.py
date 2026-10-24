@@ -128,6 +128,22 @@ def create_incident(db: Session, data: dict, reporter_id: int) -> Incident:
     db.commit()
     db.refresh(incident)
 
+    # Bắn thông báo tức thì ngoại vi (Zalo Webhook / Telegram Bot) nếu là sự cố cấp bách / khẩn cấp
+    try:
+        from app.services.alert_service import send_external_alert
+        reporter = db.query(User).filter(User.id == reporter_id).first()
+        reporter_name = reporter.full_name if reporter else "Học sinh"
+        send_external_alert(
+            db=db,
+            incident=incident,
+            location_name=loc_name,
+            type_name=incident_type.name if incident_type else "Cơ sở vật chất",
+            reporter_name=reporter_name
+        )
+    except Exception as e:
+        # Không làm gián đoạn việc lưu sự cố nếu webhook lỗi mạng
+        pass
+
     return incident
 
 

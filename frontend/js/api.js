@@ -216,6 +216,25 @@ class ApiService {
     });
   }
 
+  // === EXTERNAL ALERTS (ZALO & TELEGRAM) ===
+  static getAlertSettings() {
+    return this.request('/config/alerts');
+  }
+
+  static updateAlertSettings(alertData) {
+    return this.request('/config/alerts', {
+      method: 'PUT',
+      body: JSON.stringify(alertData),
+    });
+  }
+
+  static testAlertChannel(channel, target, token = '') {
+    return this.request('/config/alerts/test', {
+      method: 'POST',
+      body: JSON.stringify({ channel, target, token }),
+    });
+  }
+
   // === STATS ===
   static getStatsOverview() {
     return this.request('/stats/overview');

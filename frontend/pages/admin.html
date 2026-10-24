@@ -51,6 +51,11 @@
         <a href="#users" id="nav-users" onclick="switchAdminTab('users'); closeAdminSidebarOnMobile();">
           <span>👥</span> Tài Khoản Người Dùng
         </a>
+
+        <div class="admin-nav-category">Tích Hợp & Cảnh Báo</div>
+        <a href="#alerts" id="nav-alerts" onclick="switchAdminTab('alerts'); closeAdminSidebarOnMobile();">
+          <span>📲</span> Bắn Thông Báo Zalo & Telegram
+        </a>
       </nav>
 
       <div style="padding: 1.25rem 1.5rem; font-size: 0.775rem; color: #94a3b8; border-top: 1px solid rgba(255,255,255,0.08); line-height: 1.5;">
@@ -599,6 +604,98 @@
           </div>
         </section>
 
+        <!-- ================= SECTION 7: BẮN THÔNG BÁO TỨC THÌ (ZALO & TELEGRAM) ================= -->
+        <section id="sec-alerts" class="admin-section" style="display: none;">
+          <div class="card" style="max-width: 900px; margin: 0 auto;">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Cấu hình Bắn Thông Báo Tức Thì (Zalo & Telegram Webhook)</h3>
+                <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.2rem;">
+                  Tự động gửi tin nhắn báo động ra điện thoại của Ban Giám hiệu & Tổ Kỹ thuật khi có sự cố khẩn cấp (P = 999) hoặc cấp bách (P ≥ 3.5).
+                </p>
+              </div>
+              <span class="badge badge-success">Emergency Push Alert</span>
+            </div>
+
+            <div class="card-body">
+              <form id="alert-settings-form">
+                <!-- Kích hoạt & Ngưỡng ưu tiên -->
+                <div style="background: #f8fafc; border: 1px solid var(--surface-border); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+                  <div class="form-row">
+                    <div class="form-group" style="margin: 0;">
+                      <label class="form-label" style="font-weight: 700;">Trạng thái phát cảnh báo</label>
+                      <select id="alert-enabled" class="form-control">
+                        <option value="true">🟢 Đang BẬT thông báo tức thì</option>
+                        <option value="false">🔴 ĐANG TẮT (Tạm ngưng)</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group" style="margin: 0;">
+                      <label class="form-label" style="font-weight: 700;">Ngưỡng kích hoạt tin nhắn</label>
+                      <select id="alert-min-priority" class="form-control">
+                        <option value="urgent">⚠️ Từ mức Cấp bách trở lên (P ≥ 3.5 và P = 999)</option>
+                        <option value="emergency">🚨 Chỉ gửi khi Khẩn cấp đặc biệt (P = 999 Safety Override)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cấu hình Telegram Bot -->
+                <div style="border: 1.5px solid #0284c7; border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem; background: #f0f9ff;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <div style="font-weight: 800; color: #0369a1; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                      <span>✈️</span> Kênh 1: Telegram Bot (Miễn phí 100% • Khuyên dùng)
+                    </div>
+                    <button type="button" class="btn btn-xs btn-outline" style="border-color: #0284c7; color: #0369a1;" onclick="testTelegramAlert()">
+                      🔔 Gửi thử tin nhắn
+                    </button>
+                  </div>
+                  <p style="font-size: 0.8rem; color: #0284c7; margin-bottom: 1rem;">
+                    Tạo Bot miễn phí qua @BotFather trên Telegram, sau đó thêm Bot vào nhóm Zalo/Telegram của Tổ kỹ thuật trường THPT Ô Môn.
+                  </p>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label" style="font-size: 0.8rem;">Telegram Bot Token</label>
+                      <input type="text" id="alert-tg-token" class="form-control" placeholder="Ví dụ: 123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" style="font-size: 0.8rem;">Telegram Chat ID (Nhóm hoặc Cá nhân)</label>
+                      <input type="text" id="alert-tg-chatid" class="form-control" placeholder="Ví dụ: -100123456789 hoặc @nhom_kythuat">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cấu hình Zalo Webhook -->
+                <div style="border: 1.5px solid #2563eb; border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem; background: #eff6ff;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <div style="font-weight: 800; color: #1d4ed8; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                      <span>💬</span> Kênh 2: Zalo Webhook / Zalo OA Webhook
+                    </div>
+                    <button type="button" class="btn btn-xs btn-outline" style="border-color: #2563eb; color: #1d4ed8;" onclick="testZaloAlert()">
+                      🔔 Gửi thử Webhook
+                    </button>
+                  </div>
+                  <p style="font-size: 0.8rem; color: #1e40af; margin-bottom: 1rem;">
+                    Dán Webhook Endpoint của Zalo Notification Service (ZNS), Make/Zapier Zalo Bot, hoặc máy chủ điều phối tin nhắn Zalo của trường.
+                  </p>
+
+                  <div class="form-group" style="margin: 0;">
+                    <label class="form-label" style="font-size: 0.8rem;">Zalo Webhook URL</label>
+                    <input type="url" id="alert-zalo-url" class="form-control" placeholder="https://openapi.zalo.me/... hoặc https://hook.eu1.make.com/...">
+                  </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                  <button type="submit" id="save-alerts-btn" class="btn btn-primary btn-lg">
+                    <span>💾 Lưu Cấu Hình Bắn Thông Báo Ngoại Vi</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
       </main>
     </div>
   </div>
@@ -642,7 +739,7 @@
 
     // Chuyển Tab
     function switchAdminTab(tab) {
-      const sections = ['dashboard', 'incidents', 'weights', 'locations', 'types', 'users'];
+      const sections = ['dashboard', 'incidents', 'weights', 'locations', 'types', 'users', 'alerts'];
       sections.forEach(s => {
         document.getElementById(`sec-${s}`).style.display = s === tab ? 'block' : 'none';
         const navEl = document.getElementById(`nav-${s}`);
@@ -655,7 +752,8 @@
         weights: 'Cấu Hình Trọng Số & Bộ Giả Lập Điểm P',
         locations: 'Danh Mục Địa Điểm & Mức Rủi Ro Khu Vực',
         types: 'Danh Mục Loại Sự Cố & Cơ Chế Ghi Đè An Toàn',
-        users: 'Quản Lý Tài Khoản Học Sinh, Nhân Viên & Quản Trị'
+        users: 'Quản Lý Tài Khoản Học Sinh, Nhân Viên & Quản Trị',
+        alerts: 'Cấu Hình Bắn Thông Báo Tức Thì Qua Zalo & Telegram'
       };
       document.getElementById('admin-header-title').textContent = titles[tab] || '';
 
@@ -665,6 +763,7 @@
       if (tab === 'locations') loadLocations();
       if (tab === 'types') loadTypes();
       if (tab === 'users') loadUsers();
+      if (tab === 'alerts') loadAlertSettings();
     }
 
     let lastFetchedAdminIncidents = [];
@@ -1875,10 +1974,81 @@
       });
     }
 
+    // 7. Alert Settings (Zalo & Telegram)
+    async function loadAlertSettings() {
+      try {
+        const res = await ApiService.getAlertSettings();
+        const data = res.data || {};
+        document.getElementById('alert-enabled').value = data.alert_enabled || 'true';
+        document.getElementById('alert-min-priority').value = data.alert_min_priority || 'urgent';
+        document.getElementById('alert-tg-token').value = data.telegram_bot_token || '';
+        document.getElementById('alert-tg-chatid').value = data.telegram_chat_id || '';
+        document.getElementById('alert-zalo-url').value = data.zalo_webhook_url || '';
+      } catch (err) {
+        Toast.error('Lỗi nạp cấu hình cảnh báo: ' + err.message);
+      }
+    }
+
+    document.getElementById('alert-settings-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('save-alerts-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span>Đang lưu cấu hình...</span>';
+
+      const payload = {
+        alert_enabled: document.getElementById('alert-enabled').value,
+        alert_min_priority: document.getElementById('alert-min-priority').value,
+        telegram_bot_token: document.getElementById('alert-tg-token').value.trim(),
+        telegram_chat_id: document.getElementById('alert-tg-chatid').value.trim(),
+        zalo_webhook_url: document.getElementById('alert-zalo-url').value.trim()
+      };
+
+      try {
+        await ApiService.updateAlertSettings(payload);
+        Toast.success('Đã lưu cấu hình Bắn Thông Báo Tức Thì thành công!');
+      } catch (err) {
+        Toast.error(err.message || 'Lỗi lưu cấu hình');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>💾 Lưu Cấu Hình Bắn Thông Báo Ngoại Vi</span>';
+      }
+    });
+
+    async function testTelegramAlert() {
+      const token = document.getElementById('alert-tg-token').value.trim();
+      const chatid = document.getElementById('alert-tg-chatid').value.trim();
+      if (!token || !chatid) {
+        Toast.warning('Vui lòng nhập đủ Telegram Bot Token và Chat ID');
+        return;
+      }
+      try {
+        Toast.info('Đang gửi tin nhắn kiểm tra qua Telegram...');
+        const res = await ApiService.testAlertChannel('telegram', chatid, token);
+        Toast.success('Gửi tin nhắn Telegram thành công! Hãy kiểm tra nhóm/chat.');
+      } catch (err) {
+        Toast.error(err.message || 'Lỗi gửi tin nhắn Telegram');
+      }
+    }
+
+    async function testZaloAlert() {
+      const zaloUrl = document.getElementById('alert-zalo-url').value.trim();
+      if (!zaloUrl) {
+        Toast.warning('Vui lòng nhập Zalo Webhook URL');
+        return;
+      }
+      try {
+        Toast.info('Đang gửi webhook kiểm tra qua Zalo...');
+        const res = await ApiService.testAlertChannel('zalo', zaloUrl);
+        Toast.success('Gửi Zalo Webhook thành công!');
+      } catch (err) {
+        Toast.error(err.message || 'Lỗi gửi Webhook Zalo');
+      }
+    }
+
     // Hỗ trợ Hash Navigation & Load tab ban đầu
     function checkHashRoute() {
       const hash = window.location.hash.replace('#', '');
-      const validTabs = ['dashboard', 'incidents', 'weights', 'locations', 'types', 'users'];
+      const validTabs = ['dashboard', 'incidents', 'weights', 'locations', 'types', 'users', 'alerts'];
       if (validTabs.includes(hash)) {
         switchAdminTab(hash);
       } else {

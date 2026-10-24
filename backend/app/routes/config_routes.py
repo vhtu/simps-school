@@ -328,3 +328,69 @@ def delete_incident_type(
         message="Xóa loại sự cố thành công"
     )
 
+
+# === CẤU HÌNH BẮN THÔNG BÁO TỨC THÌ (ZALO WEBHOOK & TELEGRAM BOT) ===
+
+class AlertConfigUpdate(BaseModel):
+    zalo_webhook_url: str = ""
+    telegram_bot_token: str = ""
+    telegram_chat_id: str = ""
+    alert_enabled: str = "true"
+    alert_min_priority: str = "urgent"
+
+
+class AlertTestRequest(BaseModel):
+    channel: str  # "zalo" hoặc "telegram"
+    target: str   # Webhook URL hoặc Chat ID
+    token: str = "" # Bot token (cho telegram)
+
+
+@router.get("/alerts", summary="Lấy cấu hình thông báo tức thì (Admin)")
+def get_alert_settings(
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_role("admin"))
+):
+    from app.services import alert_service
+    configs = alert_service.get_alert_configs(db)
+    return api_response(
+        success=True,
+        data=configs,
+        message="Lấy cấu hình thông báo tức thì thành công"
+    )
+
+
+@router.put("/alerts", summary="Lưu cấu hình thông báo tức thì (Admin)")
+def update_alert_settings(
+    data: AlertConfigUpdate,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_role("admin"))
+):
+    from app.services import alert_service
+    alert_service.save_alert_configs(db, data.model_dump())
+    return api_response(
+        success=True,
+        data=data.model_dump(),
+        message="Lưu cấu hình thông báo Zalo / Telegram thành công"
+    )
+
+
+@router.post("/alerts/test", summary="Gửi thử nghiệm tin nhắn cảnh báo (Admin)")
+def test_alert_channel(
+    req: AlertTestRequest,
+    admin: User = Depends(require_role("admin"))
+):
+    from app.services import alert_service
+    try:
+        res = alert_service.test_alert_channel(req.channel, req.target, req.token)
+        return api_response(
+            success=True,
+            data=res,
+            message="Đã gửi tin nhắn thử nghiệm thành công!"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Gửi tin nhắn thử nghiệm thất bại: {str(e)}"
+        )
+
+
