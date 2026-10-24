@@ -14,7 +14,6 @@
   2. **Hồ Anh Khoa** - Trường THPT Ô Môn, TP Cần Thơ
 * **Giáo viên hướng dẫn (GVHD)**: **Phan Thuý Quỳnh**
 * **Nền tảng trực tuyến**: [https://simps-school.vercel.app](https://simps-school.vercel.app)
-* **Mã nguồn dự án**: [https://github.com/vhtu/simps-school](https://github.com/vhtu/simps-school)
 
 ---
 

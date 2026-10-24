@@ -431,6 +431,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
   .table-responsive table.table-mobile-card {
     display: block;
+    width: 100%;
     border: none;
   }
 
@@ -442,14 +443,16 @@ input[type="range"]::-webkit-slider-thumb:hover {
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
+    width: 100%;
   }
 
   .table-responsive table.table-mobile-card tr {
     display: block;
+    width: 100%;
     background: #ffffff;
     border: 1px solid var(--surface-border);
     border-radius: var(--radius-md);
-    padding: 1rem;
+    padding: 0.85rem 1rem;
     box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
 
@@ -460,11 +463,12 @@ input[type="range"]::-webkit-slider-thumb:hover {
     padding: 0.45rem 0;
     border-bottom: 1px dashed #f1f5f9;
     font-size: 0.85rem;
+    text-align: right;
   }
 
   .table-responsive table.table-mobile-card td:last-child {
     border-bottom: none;
-    padding-top: 0.75rem;
+    padding-top: 0.65rem;
     justify-content: flex-end;
   }
 
@@ -478,6 +482,18 @@ input[type="range"]::-webkit-slider-thumb:hover {
     margin-right: 0.75rem;
     text-align: left;
     flex-shrink: 0;
+  }
+
+  /* Form row stack on small screens */
+  .form-row > * {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+
+  /* Modal responsive on mobile */
+  .modal-dialog {
+    max-width: 95vw !important;
+    margin: 0.5rem !important;
   }
 }
 

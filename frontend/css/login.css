@@ -291,12 +291,45 @@
     flex-direction: column;
   }
   .login-hero-col {
-    padding: 3rem 2rem;
+    padding: 2.5rem 1.5rem;
   }
   .login-form-col {
-    padding: 3rem 2rem;
+    padding: 2.5rem 1.5rem;
   }
   .hero-title {
-    font-size: 2.2rem;
+    font-size: 1.85rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .login-hero-col {
+    padding: 2rem 1.25rem 1.5rem;
+  }
+  .hero-content {
+    margin: 1.5rem 0;
+  }
+  .hero-title {
+    font-size: 1.4rem;
+  }
+  .hero-desc {
+    display: none;
+  }
+  .hero-features {
+    display: none; /* Thu gọn các tính năng chi tiết trên mobile để người dùng cuộn nhanh tới khung đăng nhập */
+  }
+  .login-form-col {
+    padding: 2rem 1.25rem 3rem;
+  }
+  .login-welcome {
+    font-size: 1.45rem;
+  }
+  .quick-fill-chips {
+    gap: 0.4rem;
+  }
+  .quick-chip {
+    padding: 0.5rem 0.25rem;
+  }
+  .quick-chip-role {
+    font-size: 0.75rem;
   }
 }
