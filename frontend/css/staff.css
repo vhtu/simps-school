@@ -7,6 +7,8 @@
   display: flex;
   min-height: 100vh;
   background-color: #f8fafc;
+  width: 100%;
+  position: relative;
 }
 
 /* SIDEBAR */
@@ -103,6 +105,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-width: 0;
+  width: calc(100% - var(--sidebar-w));
 }
 
 .staff-topbar {
@@ -118,12 +122,15 @@
   position: sticky;
   top: 0;
   z-index: 30;
+  width: 100%;
 }
 
 .staff-content {
   padding: 2rem;
   flex: 1;
   max-width: 1400px;
+  width: 100%;
+  min-width: 0;
 }
 
 /* EMERGENCY TICKER BANNER */

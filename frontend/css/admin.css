@@ -7,6 +7,8 @@
   display: flex;
   min-height: 100vh;
   background-color: #f8fafc;
+  width: 100%;
+  position: relative;
 }
 
 /* SIDEBAR */
@@ -104,6 +106,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-width: 0; /* Cho phép flex item co lại, không ép tràn ngang màn hình */
+  width: calc(100% - var(--sidebar-w));
 }
 
 .admin-topbar {
@@ -119,13 +123,17 @@
   position: sticky;
   top: 0;
   z-index: 30;
+  width: 100%;
 }
 
 .admin-content {
   padding: 2.25rem;
   flex: 1;
   max-width: 1440px;
+  width: 100%;
+  min-width: 0;
 }
+
 
 /* CHARTS GRID */
 .charts-grid {
