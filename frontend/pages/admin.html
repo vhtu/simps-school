@@ -1121,6 +1121,19 @@
 
             ${inc.description ? `<div style="margin-bottom: 1rem;"><strong style="font-size: 0.825rem; color: #64748b;">Mô tả hiện trường:</strong><p style="margin-top: 0.25rem; font-size: 0.9rem;">${Utils.escapeHtml(inc.description)}</p></div>` : ''}
 
+            ${(inc.image_paths && inc.image_paths.length > 0) ? `
+              <div style="margin-bottom: 1.25rem;">
+                <strong style="font-size: 0.825rem; color: #64748b; display: block; margin-bottom: 0.5rem;">📸 Hình ảnh hiện trường sự cố do học sinh gửi:</strong>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                  ${inc.image_paths.map(img => `
+                    <a href="${img}" target="_blank" title="Bấm để xem ảnh phóng to" style="display: inline-block; position: relative;">
+                      <img src="${img}" alt="Ảnh sự cố" style="max-height: 180px; max-width: 100%; object-fit: cover; border-radius: 8px; border: 1.5px solid #cbd5e1; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                    </a>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+
             <form id="admin-incident-edit-form" style="border-top: 1px dashed var(--surface-border); padding-top: 1rem; margin-top: 1rem;">
               <div class="form-row">
                 <div class="form-group">

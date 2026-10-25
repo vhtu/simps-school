@@ -243,31 +243,46 @@ async def upload_image(
     current_user: User = Depends(get_current_user)
 ):
     """
-    Upload hình ảnh minh chứng sự cố, lưu vào thư mục static uploads.
-    Trả về URL đường dẫn tương đối của ảnh.
+    Upload hình ảnh minh chứng sự cố:
+    - Chuyển đổi thành Data URL (Base64) an toàn, tương thích 100% với môi trường Serverless (Vercel)
+      và lưu trữ trực tiếp vào CSDL Supabase PostgreSQL mà không lo mất file khi container tắt.
+    - Đồng thời sao lưu vào thư mục UPLOAD_DIR cục bộ nếu có thể.
     """
-    # Kiểm tra loại file
     allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
-    if file.content_type not in allowed_types:
+    content_type = file.content_type or "image/jpeg"
+    if content_type not in allowed_types:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Định dạng ảnh không hợp lệ (chỉ hỗ trợ JPG, PNG, WEBP, GIF)"
         )
 
-    # Đảm bảo thư mục upload tồn tại
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    content = await file.read()
+    if len(content) > 5 * 1024 * 1024:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Kích thước ảnh vượt quá giới hạn 5MB"
+        )
 
     # Đặt tên file ngẫu nhiên tránh trùng lặp
-    file_ext = os.path.splitext(file.filename)[1]
+    file_ext = os.path.splitext(file.filename)[1] if file.filename else ".jpg"
     filename = f"{uuid.uuid4().hex}{file_ext}"
-    file_path = os.path.join(UPLOAD_DIR, filename)
 
-    async with aiofiles.open(file_path, "wb") as out_file:
-        content = await file.read()
-        await out_file.write(content)
+    # Sao lưu cục bộ nếu được
+    try:
+        os.makedirs(UPLOAD_DIR, exist_ok=True)
+        file_path = os.path.join(UPLOAD_DIR, filename)
+        async with aiofiles.open(file_path, "wb") as out_file:
+            await out_file.write(content)
+    except Exception:
+        pass
+
+    # Tạo Base64 Data URL để lưu bền vững trên Supabase
+    import base64
+    b64_str = base64.b64encode(content).decode("utf-8")
+    data_url = f"data:{content_type};base64,{b64_str}"
 
     return api_response(
         success=True,
-        data={"url": f"/uploads/{filename}", "filename": filename},
+        data={"url": data_url, "filename": filename},
         message="Upload hình ảnh thành công"
     )
