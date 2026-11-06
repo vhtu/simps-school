@@ -1,11 +1,10 @@
 # Nghiên cứu, phát triển hệ thống tiếp nhận và tự động xếp hạng ưu tiên xử lý sự cố cơ sở vật chất trường học dựa trên thuật toán đa tiêu chí (SIMPS)
 > **School Incident Management and Prioritization System (SIMPS)**
 
-### 🎓 THÔNG TIN ĐỀ TÀI KHOA HỌC KỸ THUẬT (KHKT 2026)
-* **Học sinh thực hiện**: **Lê Quốc Khánh** và **Hồ Anh Khoa**
-* **Giáo viên hướng dẫn (GVHD)**: **Phan Thuý Quỳnh**
-* **Đơn vị dự thi**: **Trường THPT Ô Môn, TP Cần Thơ**
+### 🎓 THÔNG TIN ĐỀ TÀI KHOA HỌC KỸ THUẬT (KHKT)
 * **Lĩnh vực nghiên cứu**: Hệ thống nhúng & Phần mềm hệ thống (System Software)
+* **Mục tiêu**: Tối ưu hóa quy trình quản trị, phản ứng nhanh và xếp hạng ưu tiên xử lý sự cố CSVC trường học
+* **Nền tảng trực tuyến**: [https://simps-school.vercel.app](https://simps-school.vercel.app)
 
 ---
 

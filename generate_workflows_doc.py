@@ -51,7 +51,7 @@ def create_document():
     # --- TIÊU ĐỀ BÌA TÀI LIỆU ---
     p_header = doc.add_paragraph()
     p_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_sub = p_header.add_run("CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC NĂM 2026\nĐƠN VỊ: TRƯỜNG THPT Ô MÔN, TP CẦN THƠ\nLĨNH VỰC: HỆ THỐNG NHÚNG & PHẦN MỀM HỆ THỐNG\n")
+    r_sub = p_header.add_run("CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC\nLĨNH VỰC: HỆ THỐNG NHÚNG & PHẦN MỀM HỆ THỐNG\n")
     r_sub.font.size = Pt(10)
     r_sub.font.bold = True
     r_sub.font.color.rgb = RGBColor(100, 116, 139)
@@ -66,10 +66,7 @@ def create_document():
 
     p_sub = doc.add_paragraph()
     p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_desc = p_sub.add_run("School Incident Management and Prioritization System (SIMPS)\nThuật toán xếp hạng đa tiêu chí tuyến tính kết hợp cơ chế ghi đè an toàn (Safety Override)\n\n"
-                           "Học sinh thực hiện: Lê Quốc Khánh và Hồ Anh Khoa\n"
-                           "Giáo viên hướng dẫn (GVHD): Phan Thuý Quỳnh\n"
-                           "Trường THPT Ô Môn, TP Cần Thơ")
+    r_desc = p_sub.add_run("School Incident Management and Prioritization System (SIMPS)\nThuật toán xếp hạng đa tiêu chí tuyến tính kết hợp cơ chế ghi đè an toàn (Safety Override)")
     r_desc.font.size = Pt(11)
     r_desc.font.italic = True
     r_desc.font.color.rgb = RGBColor(71, 85, 105)
@@ -405,7 +402,7 @@ def create_document():
 
     add_h2("4.1. Ma trận so sánh cặp giữa các tiêu chí (Pairwise Comparison Matrix)")
     doc.add_paragraph(
-        "Dựa trên khảo sát thực tế tại Trường THPT Ô Môn và tham vấn Ban Giám hiệu cùng Tổ kỹ thuật, mức độ ưu tiên giữa các tiêu chí được xác lập theo thang điểm 1-9 của Saaty:"
+        "Dựa trên khảo sát thực tế tại nhà trường và tham vấn cán bộ quản lý cùng Tổ kỹ thuật, mức độ ưu tiên giữa các tiêu chí được xác lập theo thang điểm 1-9 của Saaty:"
     )
 
     t_ahp = doc.add_table(rows=6, cols=7)
@@ -458,7 +455,7 @@ def create_document():
     # ================= CHƯƠNG 5 =================
     add_h1("CHƯƠNG 5: KẾT QUẢ THỰC NGHIỆM ĐỐI CHỨNG (SIMPS VS PHƯƠNG PHÁP TRUYỀN THỐNG FIFO)")
     doc.add_paragraph(
-        "Để đánh giá thực tế hiệu quả của hệ thống, đề tài đã tiến hành thử nghiệm mô phỏng và chạy đối chứng trên tập dữ liệu 50 sự cố học đường tại Trường THPT Ô Môn giữa 2 phương pháp:\n"
+        "Để đánh giá thực tế hiệu quả của hệ thống, đề tài đã tiến hành thử nghiệm mô phỏng và chạy đối chứng trên tập dữ liệu 50 sự cố học đường giữa 2 phương pháp:\n"
         "1. Phương pháp truyền thống (FIFO): Tiếp nhận và xử lý tuần tự theo thời gian báo cáo.\n"
         "2. Phương pháp SIMPS: Phân bổ và sắp xếp theo thuật toán đa tiêu chí AHP kết hợp Safety Override."
     )
@@ -509,7 +506,7 @@ def create_document():
     
     add_h2("6.1. Tính mới và sáng tạo")
     doc.add_paragraph(
-        "1. Giải pháp Báo sự cố tức thì 0-Touch qua Tem Mã QR Phòng Học: Tích hợp trực tiếp mã QR tại từng cửa lớp Trường THPT Ô Môn. Khi học sinh quét bằng camera điện thoại/Zalo, hệ thống tự động nhận diện chính xác phòng học và tầng lầu mà không cần gõ bàn phím.\n"
+        "1. Giải pháp Báo sự cố tức thì 0-Touch qua Tem Mã QR Phòng Học: Tích hợp trực tiếp mã QR tại từng cửa phòng học. Khi học sinh quét bằng camera điện thoại/Zalo, hệ thống tự động nhận diện chính xác phòng học và tầng lầu mà không cần gõ bàn phím.\n"
         "2. Ứng dụng Thuật toán Đa tiêu chí Tuyến tính kết hợp Ghi đè An toàn (Safety Override): Lượng hóa chính xác mức độ khẩn cấp dựa trên 5 yếu tố cốt lõi (S, I, R, T, E) có bảo chứng toán học AHP (CR = 0.042).\n"
         "3. Cơ chế Tự động tăng điểm theo thời gian chờ (Aging Mechanism): Đảm bảo các sự cố nhỏ không bao giờ bị bỏ quên vĩnh viễn.\n"
         "4. Phân tích Bảo trì Dự đoán (Predictive Maintenance Insights): Tự động phát hiện các thiết bị/phòng học có tỉ lệ hư hỏng lặp lại cao để kiến nghị nhà trường thay mới lô thiết bị thay vì sửa chữa chắp vá gây tốn kém ngân sách."

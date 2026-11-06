@@ -1,9 +1,6 @@
 """
-Script tạo file Word Thuyết Minh Đề Tài KHKT 2026 hoàn chỉnh
-Tên đề tài: SIMPS - Hệ Thống Quản Lý và Đánh Giá Mức Độ Ưu Tiên Sự Cố Cơ Sở Vật Chất Trường Học
-Tác giả: Lê Quốc Khánh & Hồ Anh Khoa
-GVHD: Phan Thuý Quỳnh
-Đơn vị: Trường THPT Ô Môn, Cần Thơ
+Script tạo file Word Thuyết Minh Đề Tài KHKT hoàn chỉnh
+Tên đề tài: SIMPS - Nghiên Cứu, Phát Triển Hệ Thống Tiếp Nhận và Tự Động Xếp Hạng Ưu Tiên Xử Lý Sự Cố CSVC Trường Học Dựa Trên Thuật Toán Đa Tiêu Chí
 """
 
 import os
@@ -35,7 +32,7 @@ def add_header_footer(doc):
         footer = s.footer
         p_ft = footer.paragraphs[0]
         p_ft.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        r_ft = p_ft.add_run("SIMPS - Dự thi KHKT 2026 | THPT Ô Môn, Cần Thơ | Trang ")
+        r_ft = p_ft.add_run("SIMPS - Dự thi KHKT | Trang ")
         r_ft.font.name = 'Arial'
         r_ft.font.size = Pt(8.5)
         r_ft.font.color.rgb = RGBColor(148, 163, 184)

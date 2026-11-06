@@ -8,11 +8,6 @@
 ### *Research and Development of School Incident Management and Prioritization System Based on Multi-Criteria Decision Algorithm (SIMPS)*
 
 * **Lĩnh vực dự thi**: Hệ thống nhúng & Phần mềm hệ thống (Systems Software)
-* **Đơn vị dự thi**: Trường THPT Ô Môn, Thành phố Cần Thơ
-* **Học sinh thực hiện**:
-  1. **Lê Quốc Khánh** - Trường THPT Ô Môn, TP Cần Thơ
-  2. **Hồ Anh Khoa** - Trường THPT Ô Môn, TP Cần Thơ
-* **Giáo viên hướng dẫn (GVHD)**: **Phan Thuý Quỳnh**
 * **Nền tảng trực tuyến**: [https://simps-school.vercel.app](https://simps-school.vercel.app)
 
 ---
@@ -40,9 +35,6 @@
 
 * **Tên chính thức của đề tài**: **Nghiên cứu, phát triển hệ thống tiếp nhận và tự động xếp hạng ưu tiên xử lý sự cố cơ sở vật chất trường học dựa trên thuật toán đa tiêu chí (SIMPS)**.
 * **Tên tiếng Anh**: *School Incident Management and Prioritization System (SIMPS)*.
-* **Đơn vị thực hiện**: Nhóm nghiên cứu học sinh Trường THPT Ô Môn, Thành phố Cần Thơ.
-* **Tác giả đề tài**: Lê Quốc Khánh và Hồ Anh Khoa (Học sinh Trường THPT Ô Môn).
-* **Giáo viên hướng dẫn**: Phan Thuý Quỳnh.
 * **Lĩnh vực ứng dụng**: Quản trị cơ sở vật chất học đường, Chuyển đổi số giáo dục (EdTech / Smart Campus), Phần mềm hệ thống và An toàn trường học.
 * **Đối tượng sử dụng**:
   1. *Học sinh và Giáo viên bộ môn*: Người phát hiện sự cố, quét mã QR báo hỏng hóc và trực tiếp nghiệm thu chất lượng sửa chữa.
@@ -59,7 +51,7 @@
 ## PHẦN 2. BỐI CẢNH VÀ VẤN ĐỀ THỰC TIỄN
 
 ### 2.1. Bối cảnh hình thành ý tưởng
-Tại các trường trung học phổ thông trên cả nước nói chung và Trường THPT Ô Môn nói riêng, quy mô cơ sở vật chất bao gồm hàng chục phòng học lý thuyết, phòng bộ môn thí nghiệm (Lý - Hóa - Sinh), phòng máy tính, thư viện, khu vệ sinh và hệ thống điện chiếu sáng - quạt mát - máy chiếu phục vụ hàng nghìn học sinh mỗi ngày. 
+Tại các trường trung học phổ thông trên cả nước, quy mô cơ sở vật chất bao gồm hàng chục phòng học lý thuyết, phòng bộ môn thí nghiệm (Lý - Hóa - Sinh), phòng máy tính, thư viện, khu vệ sinh và hệ thống điện chiếu sáng - quạt mát - máy chiếu phục vụ hàng nghìn học sinh mỗi ngày. 
 
 Trong quá trình giảng dạy và học tập, các hư hỏng thiết bị diễn ra thường xuyên: bóng đèn đứt, quạt đảo trần kêu rè rè hoặc gãy cánh, máy chiếu nhòe màu, ổ cắm điện lỏng lẻo, vòi nước bồn rửa tay bị rò rỉ, vỡ kính cửa sổ...
 
@@ -96,7 +88,7 @@ Xây dựng một hệ thống phần mềm quản lý và điều phối xử l
   - Phân hệ Học sinh: Quét QR phòng học, điền form, đính kèm ảnh, theo dõi tiến độ, nghiệm thu xác nhận và đổi mật khẩu.
   - Phân hệ Kỹ thuật viên (Staff): Xem Hàng đợi ưu tiên tự động (Core Queue), cảnh báo nhấp nháy Safety Override, nhận việc, ghi chép giải pháp linh kiện thay thế và chuyển trạng thái.
   - Phân hệ Ban Giám hiệu / Quản trị viên (Admin): Dashboard KPI, 5 biểu đồ trực quan, Khuyến nghị bảo trì định kỳ, Cấu hình trọng số AHP, Giả lập P trực tiếp, In hàng loạt tem QR dán cửa lớp khổ A4, Quản lý danh mục Phòng học - Loại sự cố - Tài khoản, Cấu hình Webhook Zalo/Telegram.
-* **Phạm vi ứng dụng hiện tại**: Triển khai thực nghiệm tại Trường THPT Ô Môn (15 phòng học/khu chức năng, 10 danh mục thiết bị, 28 tài khoản người dùng mẫu và 30 sự cố thực nghiệm).
+* **Phạm vi ứng dụng hiện tại**: Triển khai thực nghiệm trên hệ thống (15 phòng học/khu chức năng, 10 danh mục thiết bị, 28 tài khoản người dùng mẫu và 30 sự cố thực nghiệm).
 
 ---
 
@@ -434,7 +426,7 @@ erDiagram
 
 ### 10.1. Môi trường và Tập dữ liệu thực nghiệm
 Đề tài đã tiến hành nạp dữ liệu mô phỏng và chạy thực nghiệm trên tập mẫu gồm:
-- **Địa điểm**: 15 phòng học lý thuyết (Tòa A, Tòa B), phòng máy tính, phòng thực hành Lý - Hóa - Sinh, thư viện và hội trường Trường THPT Ô Môn.
+- **Địa điểm**: 15 phòng học lý thuyết (Tòa A, Tòa B), phòng máy tính, phòng thực hành Lý - Hóa - Sinh, thư viện và hội trường nhà trường.
 - **Danh mục thiết bị**: 10 loại thiết bị phổ biến (Điện chiếu sáng, Quạt trần, Máy chiếu, Ổ cắm điện, Cửa kính, Bàn ghế, Đường ống nước, Khóa cửa...).
 - **Người dùng**: 28 tài khoản (20 học sinh đại diện các lớp, 6 kỹ thuật viên CSVC và 2 quản trị viên).
 - **Sự cố thực nghiệm**: 50 sự cố đa dạng về mức độ nghiêm trọng và thời gian báo cáo.
@@ -505,7 +497,7 @@ Thực nghiệm so sánh trên 50 sự cố học đường giữa 2 phương th
 ## PHẦN 13. KẾT LUẬN VÀ KIẾN NGHỊ
 
 ### 13.1. Kết luận
-Đề tài **"Hệ Thống Quản Lý Và Ưu Tiên Xử Lý Sự Cố Cơ Sở Vật Chất Trong Trường Học (SIMPS)"** do hai học sinh Lê Quốc Khánh và Hồ Anh Khoa thực hiện đã giải quyết trọn vẹn và thực chất một bài toán tồn tại dai dẳng trong đời sống học đường.
+Đề tài **"Nghiên cứu, phát triển hệ thống tiếp nhận và tự động xếp hạng ưu tiên xử lý sự cố cơ sở vật chất trường học dựa trên thuật toán đa tiêu chí (SIMPS)"** đã giải quyết trọn vẹn và thực chất một bài toán tồn tại dai dẳng trong đời sống học đường.
 
 Sản phẩm không chỉ là một phần mềm thuần túy về giao diện mà sở hữu hàm lượng khoa học rõ nét:
 1. **Thuật toán đa tiêu chí Saaty AHP** được kiểm chứng chặt chẽ về mặt toán học ($CR = 0.042 < 0.10$).
@@ -515,7 +507,7 @@ Sản phẩm không chỉ là một phần mềm thuần túy về giao diện m
 Kết quả thực nghiệm định lượng chứng minh hệ thống giúp **rút ngắn 95.6% thời gian chờ của sự cố khẩn cấp** và **nâng cao tỷ lệ hài lòng của học sinh - giáo viên lên 94.8%**, khẳng định tính đúng đắn, tính mới và giá trị thực tiễn to lớn của đề tài.
 
 ### 13.2. Kiến nghị
-Kính mong Ban Tổ chức, Ban Giám khảo Cuộc thi Khoa học Kỹ thuật năm 2026 xem xét, đánh giá cao đề tài và tạo điều kiện hỗ trợ nhóm tác giả triển khai thí điểm mở rộng hệ thống SIMPS tại các trường trung học phổ thông trên địa bàn Thành phố Cần Thơ trong năm học tới.
+Kính mong Ban Tổ chức, Ban Giám khảo Cuộc thi Khoa học Kỹ thuật xem xét, đánh giá cao đề tài và tạo điều kiện hỗ trợ triển khai thí điểm mở rộng hệ thống SIMPS tại các trường trung học phổ thông trong thời gian tới.
 
 ---
 
@@ -535,10 +527,3 @@ Kính mong Ban Tổ chức, Ban Giám khảo Cuộc thi Khoa học Kỹ thuật 
 3. **FastAPI Documentation** (2023), *Modern, fast (high-performance), web framework for building APIs with Python*, [https://fastapi.tiangolo.com](https://fastapi.tiangolo.com).
 4. **PostgreSQL Global Development Group** (2023), *PostgreSQL 15 Documentation*, [https://www.postgresql.org/docs](https://www.postgresql.org/docs).
 5. **Telegram Bot API Official Reference** (2024), *Telegram Bots: An introduction for developers*, [https://core.telegram.org/bots/api](https://core.telegram.org/bots/api).
-
----
-*Cần Thơ, ngày 24 tháng 10 năm 2026*  
-**NHÓM TÁC GIẢ THỰC HIỆN ĐỀ TÀI**  
-*(Ký và ghi rõ họ tên)*  
-
-**Lê Quốc Khánh** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Hồ Anh Khoa**

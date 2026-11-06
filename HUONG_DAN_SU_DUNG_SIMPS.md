@@ -6,9 +6,8 @@
 ---
 
 ### 🎓 THÔNG TIN ĐỀ TÀI
-* **Học sinh thực hiện**: **Lê Quốc Khánh** và **Hồ Anh Khoa**
-* **Giáo viên hướng dẫn (GVHD)**: **Phan Thuý Quỳnh**
-* **Đơn vị dự thi**: **Trường THPT Ô Môn, TP Cần Thơ**
+* **Tên đề tài**: Nghiên cứu, phát triển hệ thống tiếp nhận và tự động xếp hạng ưu tiên xử lý sự cố cơ sở vật chất trường học dựa trên thuật toán đa tiêu chí (SIMPS)
+* **Lĩnh vực nghiên cứu**: Hệ thống nhúng & Phần mềm hệ thống (System Software)
 * **Địa chỉ truy cập trực tuyến**: [https://simps-school.vercel.app](https://simps-school.vercel.app)
 
 ---
@@ -191,4 +190,4 @@ Khi phát hiện hư hỏng ngay tại lớp học (quạt hỏng, đèn chớp,
 | **Học sinh (Student)** | `hs01` (đến `hs20`) | `123456` | Quét mã QR phòng học báo sự cố mới, theo dõi tiến trình, nghiệm thu xác nhận sự cố |
 
 ---
-*Tài liệu hướng dẫn sử dụng Hệ thống SIMPS • Bản quyền đề tài KHKT 2026 - Trường THPT Ô Môn, TP Cần Thơ.*
+*Tài liệu hướng dẫn sử dụng Hệ thống SIMPS • Đề tài Nghiên cứu Khoa học Kỹ thuật.*

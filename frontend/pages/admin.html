@@ -59,10 +59,9 @@
       </nav>
 
       <div style="padding: 1.25rem 1.5rem; font-size: 0.775rem; color: #94a3b8; border-top: 1px solid rgba(255,255,255,0.08); line-height: 1.5;">
-        <div style="color: #ffffff; font-weight: 700; margin-bottom: 0.25rem;">Trường THPT Ô Môn, Cần Thơ</div>
-        <div>Học sinh: <strong style="color: #93c5fd;">Lê Quốc Khánh</strong> và <strong style="color: #93c5fd;">Hồ Anh Khoa</strong></div>
-        <div>GVHD: <strong style="color: #cbd5e1;">Phan Thuý Quỳnh</strong></div>
-        <div style="margin-top: 0.35rem; font-size: 0.725rem; color: #64748b;">Đề tài KHKT 2026 • SIMPS v1.0</div>
+        <div style="color: #ffffff; font-weight: 700; margin-bottom: 0.25rem;">Hệ Thống SIMPS Quản Trị</div>
+        <div>Đề tài Nghiên cứu Khoa học Kỹ thuật</div>
+        <div style="margin-top: 0.35rem; font-size: 0.725rem; color: #64748b;">Phiên bản v1.0 • Thuật toán đa tiêu chí</div>
       </div>
     </aside>
 
@@ -651,7 +650,7 @@
                     </button>
                   </div>
                   <p style="font-size: 0.8rem; color: #0284c7; margin-bottom: 1rem;">
-                    Tạo Bot miễn phí qua @BotFather trên Telegram, sau đó thêm Bot vào nhóm Zalo/Telegram của Tổ kỹ thuật trường THPT Ô Môn.
+                    Tạo Bot miễn phí qua @BotFather trên Telegram, sau đó thêm Bot vào nhóm Zalo/Telegram của Tổ kỹ thuật cơ sở vật chất.
                   </p>
 
                   <div class="form-row">
@@ -1467,7 +1466,7 @@
         <div style="text-align: center; padding: 0.5rem;">
           <div style="display: inline-block; background: #ffffff; border: 2px dashed #3b82f6; border-radius: 12px; padding: 1.25rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 320px;">
             <div style="font-size: 0.75rem; font-weight: 800; color: #1e3a8a; letter-spacing: 0.05em; text-transform: uppercase;">
-              TRƯỜNG THPT Ô MÔN • TP CẦN THƠ
+              HỆ THỐNG QUẢN LÝ CSVC HỌC ĐƯỜNG • SIMPS
             </div>
             <div style="font-size: 1.15rem; font-weight: 900; color: #0f172a; margin: 0.35rem 0 0.15rem 0;">
               ${Utils.escapeHtml(name)}
@@ -1513,7 +1512,7 @@
         </head>
         <body onload="window.print(); window.close();">
           <div class="sticker">
-            <div class="school">SỞ GD&ĐT TP CẦN THƠ • TRƯỜNG THPT Ô MÔN</div>
+            <div class="school">HỆ THỐNG QUẢN LÝ VÀ PHẢN ỨNG NHANH SỰ CỐ CSVC</div>
             <div class="room">${name}</div>
             <div class="desc">${building} • Điểm Tiếp Nhận Sự Cố CSVC</div>
             <img class="qr-img" src="${qrUrl}">
@@ -1538,12 +1537,12 @@
         const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(reportUrl)}`;
         cardsHtml += `
           <div class="sticker">
-            <div class="school">TRƯỜNG THPT Ô MÔN • CẦN THƠ</div>
+            <div class="school">HỆ THỐNG QUẢN TRỊ CSVC HỌC ĐƯỜNG SIMPS</div>
             <div class="room">${l.name}</div>
             <div class="desc">${l.building} (Tầng ${l.floor || 1})</div>
             <img class="qr-img" src="${qrApiUrl}">
             <div class="footer">QUÉT ĐỂ BÁO HỎNG HÓC TỨC THÌ</div>
-            <div class="sub">SIMPS 2026 • Tự động gắn vị trí phòng học</div>
+            <div class="sub">SIMPS • Tự động gắn vị trí phòng học</div>
           </div>
         `;
       });
@@ -1551,7 +1550,7 @@
       win.document.write(`
         <html>
         <head>
-          <title>In Danh Sách Tem QR Báo Cáo - Trường THPT Ô Môn</title>
+          <title>In Danh Sách Tem QR Báo Cáo - Hệ thống SIMPS</title>
           <style>
             @page { size: A4; margin: 10mm; }
             body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; background: #fff; }

@@ -60,7 +60,7 @@ def send_external_alert(db: Session, incident, location_name: str, type_name: st
     p_badge = "🚨 [KHẨN CẤP - P=999]" if incident.priority_level == "emergency" else "⚠️ [CẤP BÁCH]"
     message_text = (
         f"{p_badge} CẢNH BÁO SỰ CỐ CƠ SỞ VẬT CHẤT\n"
-        f"🏛️ Trường THPT Ô Môn - Hệ thống SIMPS\n"
+        f"🏛️ Hệ thống Quản trị SIMPS\n"
         f"-----------------------------------------\n"
         f"📌 Sự cố: {incident.title}\n"
         f"📍 Khu vực: {location_name}\n"
@@ -119,8 +119,8 @@ def test_alert_channel(channel: str, target: str, token: str = "") -> dict:
     """Gửi tin nhắn test kiểm tra kênh liên lạc"""
     test_msg = (
         "🔔 [TEST SIMPS] Kiểm tra kết nối Thông Báo Tức Thì thành công!\n"
-        "🏛️ Hệ thống Quản lý và Ưu tiên Sự cố - Trường THPT Ô Môn\n"
-        "Đề tài KHKT 2026 • Kênh thông báo hoạt động sẵn sàng tiếp nhận sự cố khẩn cấp."
+        "🏛️ Hệ thống Quản lý và Ưu tiên Sự cố CSVC (SIMPS)\n"
+        "Đề tài KHKT • Kênh thông báo hoạt động sẵn sàng tiếp nhận sự cố khẩn cấp."
     )
     if channel == "telegram":
         if not token or not target:

@@ -1,7 +1,6 @@
 """
 Script tạo file Word (.docx) Hướng dẫn Sử dụng Hệ thống SIMPS
-Dành cho đề tài KHKT 2026 - Trường THPT Ô Môn, Cần Thơ.
-Học sinh thực hiện: Lê Quốc Khánh và Hồ Anh Khoa.
+Dành cho đề tài Nghiên cứu Khoa học Kỹ thuật (KHKT).
 """
 
 import os
@@ -36,7 +35,7 @@ def create_manual():
 
     # Header
     p_top = doc.add_paragraph()
-    r1 = p_top.add_run("SỞ GD&ĐT THÀNH PHỐ CẦN THƠ • TRƯỜNG THPT Ô MÔN\nCUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC NĂM 2026\n")
+    r1 = p_top.add_run("CUỘC THI KHOA HỌC KỸ THUẬT DÀNH CHO HỌC SINH TRUNG HỌC\n")
     r1.font.size = Pt(9.5)
     r1.font.bold = True
     r1.font.color.rgb = RGBColor(100, 116, 139)
@@ -53,10 +52,7 @@ def create_manual():
 
     p_sub = doc.add_paragraph()
     p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r_sub = p_sub.add_run("Học sinh thực hiện: Lê Quốc Khánh và Hồ Anh Khoa\n"
-                          "Giáo viên hướng dẫn (GVHD): Phan Thuý Quỳnh\n"
-                          "Đơn vị: Trường THPT Ô Môn, TP Cần Thơ\n"
-                          "Hệ thống trực tuyến: https://simps-school.vercel.app")
+    r_sub = p_sub.add_run("Hệ thống trực tuyến: https://simps-school.vercel.app")
     r_sub.font.size = Pt(10.5)
     r_sub.font.italic = True
     r_sub.font.color.rgb = RGBColor(71, 85, 105)
