@@ -56,10 +56,10 @@ Tại các trường trung học phổ thông trên cả nước, quy mô cơ s�
 Trong quá trình giảng dạy và học tập, các hư hỏng thiết bị diễn ra thường xuyên: bóng đèn đứt, quạt đảo trần kêu rè rè hoặc gãy cánh, máy chiếu nhòe màu, ổ cắm điện lỏng lẻo, vòi nước bồn rửa tay bị rò rỉ, vỡ kính cửa sổ...
 
 ### 2.2. Khó khăn và hạn chế của phương pháp quản lý truyền thống
-Khảo sát thực tế tại nhà trường cho thấy công tác quản lý sự cố hiện tại chủ yếu thực hiện qua các kênh thủ công:
-1. **Ghi sổ nhật ký văn phòng hoặc báo miệng**: Học sinh báo cho giáo viên chủ nhiệm, giáo viên ghi vào sổ theo dõi cơ sở vật chất hoặc báo lại cho giám thị/bảo vệ, sau đó chuyển đến bộ phận văn phòng rồi mới phân công cho nhân viên sửa chữa.
-2. **Quy trình xử lý tuần tự (FIFO) hoặc hoàn toàn theo cảm tính**: Các phiếu yêu cầu thường được xử lý theo kiểu "ai báo trước sửa trước" hoặc "thợ tiện đâu làm đó". 
-3. **Mất dấu thông tin và đứt gãy vòng lặp phản hồi**: Không có cơ chế lưu trữ lịch sử sửa chữa, học sinh báo sự cố xong không biết khi nào thợ đến sửa, thợ sửa xong không có sự nghiệm thu của người sử dụng dẫn đến tình trạng sửa ẩu hoặc vừa sửa xong đã hỏng lại.
+Kết quả khảo sát thực tế diện rộng từ **324 học sinh** tại trường phổ thông cho thấy công tác quản lý cơ sở vật chất hiện tại bộc lộ nhiều điểm nghẽn nghiêm trọng:
+1. **Thời gian tiếp nhận và xử lý sự cố rất chậm**: Đa số người dùng đánh giá tốc độ xử lý hiện tại chỉ ở mức thấp (điểm trung bình chỉ đạt khoảng 2.8/5.0), nhiều sự cố mất từ 3 - 5 ngày hoặc thậm chí nhiều tuần chưa có người kiểm tra.
+2. **Kênh tiếp nhận phân tán và thiếu công cụ theo dõi**: Hơn 80% người được hỏi cho biết khi gặp hỏng hóc chỉ có thể báo miệng cho giáo viên chủ nhiệm, bảo vệ hoặc lao công; không có hệ thống lưu vết lịch sử dẫn đến tình trạng quên việc hoặc đùn đẩy trách nhiệm.
+3. **Xử lý tuần tự (FIFO) hoặc hoàn toàn theo cảm tính**: Thiếu thước đo định lượng để phân loại khẩn cấp. Các sự cố nguy hiểm tiềm ẩn (hở điện, nứt vỡ kính) bị xếp lẫn lộn với sự cố thông thường (hỏng rèm, lỏng khóa tủ), gây rủi ro an toàn rất lớn cho môi trường học đường.
 
 ### 2.3. Hệ quả tiêu cực phát sinh nếu không giải quyết triệt để
 * **Nguy cơ tai nạn thương tích học đường nghiêm trọng**: Sự cố nguy hiểm (hở dây điện hành lang, chập cầu dao, nứt lan can tầng 3) bị xếp lẫn lộn với sự cố lặt vặt (hỏng ổ khóa tủ, bàn lung lay), dẫn đến việc nhân viên kỹ thuật chậm trễ can thiệp, tiềm ẩn nguy cơ giật điện hoặc tai nạn học sinh.
@@ -97,7 +97,9 @@ Xây dựng một hệ thống phần mềm quản lý và điều phối xử l
 ### 4.1. Ý tưởng cốt lõi: Tiếp cận Đa tiêu chí & Ghi đè An toàn
 Hệ thống không chạy theo trào lưu sử dụng Trí tuệ nhân tạo tạo sinh (Generative AI) phức tạp, đắt đỏ và tiềm ẩn hiện tượng "ảo giác" (hallucination). Thay vào đó, đề tài xây dựng **Thuật toán Đa tiêu chí Tuyến tính dựa trên Luật và Trọng số (Rule-Based Multi-Criteria Decision Making - MCDM)**:
 
-$$\mathbf{P = w_1 \times S + w_2 \times I + w_3 \times R + w_4 \times T + w_5 \times E}$$
+$$\mathbf{P = 0.24 \times S + 0.21 \times I + 0.20 \times R + 0.18 \times T + 0.17 \times E}$$
+
+*(Bộ trọng số được xác lập và chuẩn hóa từ ma trận AHP dựa trên 324 phiếu khảo sát thực tế, đạt tỷ số nhất quán $CR = 0.0071 = 0.71\% < 10\%$, tuân thủ hoàn hảo chuẩn mực toán học của GS. Thomas L. Saaty).*
 
 Trong đó, điểm ưu tiên $P$ được phân nhóm thành 4 cấp độ:
 - **Khẩn cấp (Emergency)**: $P = 999$ (Kích hoạt Safety Override).
@@ -380,7 +382,7 @@ erDiagram
   - 4 thẻ KPI nổi bật (Tổng sự cố, Khẩn cấp, Quá hạn, Đã sửa xong).
   - 5 biểu đồ đồ họa: Donut phân bổ danh mục, Bar Chart điểm nóng phòng học, Time-Series xu hướng tháng, Horizontal Bar thời gian giải quyết trung bình theo cấp độ ưu tiên, Grouped Bar hiệu suất từng nhân viên.
 * **Thẻ Khuyến nghị bảo trì định kỳ (Predictive Maintenance Insights)**: Tự động phân tích các hư hỏng lặp lại để đưa ra đề xuất đại tu phòng học hoặc thay thế lô thiết bị mới.
-* **Cấu hình Trọng số AHP & Bộ giả lập P**: Kéo thanh trượt để thử nghiệm các giá trị giả định và xem điểm $P$ biến đổi ngay tức thì; tra cứu Ma trận so sánh cặp Saaty chứng minh $CR = 0.042 < 0.10$.
+* **Cấu hình Trọng số AHP & Bộ giả lập P**: Kéo thanh trượt để thử nghiệm các giá trị giả định và xem điểm $P$ biến đổi ngay tức thì; tra cứu Ma trận so sánh cặp Saaty chứng minh $CR = 0.0071 (0.71\%) < 10\%$, đồng thời hỗ trợ nút khôi phục nhanh về chuẩn khảo sát 324 mẫu.
 * **Trang in Hàng loạt Tem QR Phòng Học**: Nhấn nút `🖨️ In Hàng Loạt Tem QR Phòng Học` sẽ tạo ngay bản in A4 chứa toàn bộ tem mã QR dán cửa lớp cho cả trường, đầy đủ logo và hướng dẫn quét bằng Zalo/Camera.
 * **Cấu hình Bắn thông báo Zalo & Telegram Webhook**: Giao diện trực quan cho phép nhập Bot Token, Chat ID, Zalo Webhook URL kèm nút `🔔 Gửi thử tin nhắn` để kiểm tra kết nối điện thoại tức thì.
 
@@ -392,7 +394,7 @@ erDiagram
 
 | Tiêu chí so sánh | Phương pháp Truyền thống (Sổ sách / Nhóm Zalo) | Phần mềm Quản lý Việc chung (Trello, Jira...) | Hệ thống SIMPS (Đề tài KHKT) |
 | :--- | :--- | :--- | :--- |
-| **Cơ chế xác định thứ tự ưu tiên** | Hoàn toàn cảm tính hoặc xử lý tuần tự (FIFO - ai báo trước làm trước). | Gán nhãn thủ công (Low, Medium, High) theo cảm tính người tạo task. | **Định lượng đa tiêu chí khách quan** bằng thuật toán $P = w_1S + w_2I + w_3R + w_4T + w_5E$ có cơ sở toán học AHP ($CR = 0.042$). |
+| **Cơ chế xác định thứ tự ưu tiên** | Hoàn toàn cảm tính hoặc xử lý tuần tự (FIFO - ai báo trước làm trước). | Gán nhãn thủ công (Low, Medium, High) theo cảm tính người tạo task. | **Định lượng đa tiêu chí khách quan** bằng thuật toán $P = 0.24S + 0.21I + 0.20R + 0.18T + 0.17E$ có cơ sở toán học AHP dựa trên 324 mẫu khảo sát ($CR = 0.71\% < 10\%$). |
 | **Xử lý tình huống nguy hiểm đến tính mạng** | Dễ bị trôi tin nhắn trong nhóm chat hoặc thất lạc phiếu ghi chép. | Phụ thuộc vào việc người trực có nhìn thấy thẻ bài hay không. | **Cơ chế Safety Override tự động**: Tự động gán $P = 999$, phát còi báo động và bắn tin nhắn tức thì về điện thoại thợ kỹ thuật. |
 | **Thời gian học sinh báo sự cố** | Mất từ 5 - 15 phút (tìm gặp giám thị, viết giấy, giải thích vị trí). | Mất 2 - 3 phút (phải đăng nhập, tạo card, gõ bàn phím chi tiết). | **Chưa tới 20 giây** nhờ cơ chế quét Tem QR dán tại cửa phòng học tự động điền vị trí. |
 | **Hiện tượng sự cố nhỏ bị bỏ quên** | Rất phổ biến (sự cố hỏng bóng đèn nhỏ kéo dài hàng tháng trời không ai sửa). | Phổ biến (các thẻ bài độ ưu tiên thấp bị chìm sâu xuống đáy danh sách). | **Triệt tiêu hoàn toàn nhờ Aging Mechanism**: Tự động lũy kế điểm thời gian $T$, quá 72h sẽ tự kích hoạt báo động quá hạn. |
@@ -500,7 +502,7 @@ Thực nghiệm so sánh trên 50 sự cố học đường giữa 2 phương th
 Đề tài **"Nghiên cứu, phát triển hệ thống tiếp nhận và tự động xếp hạng ưu tiên xử lý sự cố cơ sở vật chất trường học dựa trên thuật toán đa tiêu chí (SIMPS)"** đã giải quyết trọn vẹn và thực chất một bài toán tồn tại dai dẳng trong đời sống học đường.
 
 Sản phẩm không chỉ là một phần mềm thuần túy về giao diện mà sở hữu hàm lượng khoa học rõ nét:
-1. **Thuật toán đa tiêu chí Saaty AHP** được kiểm chứng chặt chẽ về mặt toán học ($CR = 0.042 < 0.10$).
+1. **Thuật toán đa tiêu chí Saaty AHP** được kiểm chứng chặt chẽ về mặt toán học dựa trên số liệu khảo sát thực nghiệm 324 học sinh ($CR = 0.71\% < 10\%$).
 2. **Quy tắc an toàn Safety Override** bảo vệ tính mạng học sinh trước các thảm họa điện giật, cháy nổ.
 3. **Cơ chế 0-Touch QR Code** và **Bắn thông báo tức thì ngoại vi** đưa công nghệ vào phục vụ thực tế một cách tự nhiên, tiện lợi và gần gũi.
 
@@ -513,13 +515,26 @@ Kính mong Ban Tổ chức, Ban Giám khảo Cuộc thi Khoa học Kỹ thuật 
 
 ## PHẦN 14. PHỤ LỤC VÀ TÀI LIỆU THAM KHẢO
 
-### Phụ lục 1. Bảng Trọng số và Kiểm định Ma trận So sánh Cặp AHP
-* **Ma trận Saaty bậc 5**:
-  - $S$ so với $\{I, R, T, E\}$: Lần lượt bằng $[1.00, 1.50, 1.50, 2.00, 2.00]$.
-  - Trọng số vector riêng ($w$): $w_1 = 0.30$, $w_2 = 0.20$, $w_3 = 0.20$, $w_4 = 0.15$, $w_5 = 0.15$.
-  - Giá trị riêng cực đại: $\lambda_{\max} = 5.188$.
-  - Chỉ số nhất quán: $CI = \frac{5.188 - 5}{4} = 0.047$.
-  - Tỉ số nhất quán: $CR = \frac{CI}{RI} = \frac{0.047}{1.12} = \mathbf{0.042 < 0.10}$ (Hợp chuẩn khoa học).
+### Phụ lục 1. Bảng Trọng số và Kiểm định Ma trận So sánh Cặp AHP từ 324 Mẫu Khảo Sát Thực Nghiệm
+* **Mẫu khảo sát**: $N = 324$ học sinh tại trường phổ thông, thu thập qua Google Form trực tuyến.
+* **Ma trận Saaty bậc 5 (Tính theo trung bình hình học - Geometric Mean)**:
+  - Dòng $S$ (Nghiêm trọng): $[1.000, 1.350, 1.238, 1.277, 1.189]$
+  - Dòng $I$ (Số người ảnh hưởng): $[0.741, 1.000, 1.292, 1.229, 1.190]$
+  - Dòng $R$ (Rủi ro vị trí): $[0.808, 0.774, 1.000, 1.274, 1.253]$
+  - Dòng $T$ (Thời gian chờ tồn đọng): $[0.783, 0.814, 0.785, 1.000, 1.257]$
+  - Dòng $E$ (Tác động dạy và học): $[0.841, 0.840, 0.798, 0.796, 1.000]$
+* **Bộ trọng số chuẩn hóa ($w$)**:
+  - $w_S = 0.2391 \approx \mathbf{0.24}$ ($23.91\%$) – Mức độ nghiêm trọng hư hỏng
+  - $w_I = 0.2124 \approx \mathbf{0.21}$ ($21.24\%$) – Quy mô số người bị ảnh hưởng
+  - $w_R = 0.1985 \approx \mathbf{0.20}$ ($19.85\%$) – Độ rủi ro khu vực xảy ra
+  - $w_T = 0.1809 \approx \mathbf{0.18}$ ($18.09\%$) – Thời gian sự cố đã chờ xử lý
+  - $w_E = 0.1692 \approx \mathbf{0.17}$ ($16.92\%$) – Mức độ cản trở hoạt động dạy và học
+  - Tổng các trọng số: $\sum w_i = 1.00$ ($100\%$).
+* **Kiểm định tính nhất quán Saaty (Consistency Test)**:
+  - Giá trị riêng cực đại: $\lambda_{\max} = 5.0317$.
+  - Chỉ số nhất quán: $CI = \frac{5.0317 - 5}{4} = 0.0079$.
+  - Chỉ số ngẫu nhiên tương ứng cấp $n=5$: $RI = 1.12$.
+  - Tỉ số nhất quán: $CR = \frac{CI}{RI} = \frac{0.0079}{1.12} = \mathbf{0.0071 = 0.71\% \ll 10\%}$ (Đạt độ nhất quán gần như tuyệt đối theo chuẩn quốc tế).
 
 ### Phụ lục 2. Tài liệu Tham khảo
 1. **Thomas L. Saaty** (1980), *The Analytic Hierarchy Process: Planning, Priority Setting, Resource Allocation*, McGraw-Hill, New York.
