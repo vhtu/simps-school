@@ -41,13 +41,13 @@ else:
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 
-# === Cấu hình trọng số mặc định cho thuật toán ưu tiên ===
+# === Cấu hình trọng số mặc định cho thuật toán ưu tiên (Chuẩn hóa từ 324 mẫu khảo sát thực tế AHP, CR = 0.71%) ===
 DEFAULT_WEIGHTS = {
-    "w1": 0.30,  # Trọng số mức độ nghiêm trọng (Severity)
-    "w2": 0.20,  # Trọng số số người bị ảnh hưởng (Impact)
-    "w3": 0.20,  # Trọng số mức độ rủi ro khu vực (Risk)
-    "w4": 0.15,  # Trọng số thời gian chờ (Time)
-    "w5": 0.15,  # Trọng số ảnh hưởng học tập (Education)
+    "w1": 0.24,  # Trọng số mức độ nghiêm trọng (Severity) - 23.91%
+    "w2": 0.21,  # Trọng số số người bị ảnh hưởng (Impact) - 21.24%
+    "w3": 0.20,  # Trọng số mức độ rủi ro khu vực (Risk) - 19.85%
+    "w4": 0.18,  # Trọng số thời gian chờ (Time) - 18.09%
+    "w5": 0.17,  # Trọng số ảnh hưởng học tập (Education) - 16.92%
 }
 
 # === Ngưỡng phân loại mức ưu tiên ===

@@ -332,15 +332,18 @@
                 <span class="badge" style="background: rgba(255,255,255,0.15); color: #ffffff; border: 1px solid rgba(255,255,255,0.25);">
                   Công Thức Xếp Hạng Tuyến Tính Đa Tiêu Chí
                 </span>
-                <div class="formula-display">P = w₁S + w₂I + w₃R + w₄T + w₅E</div>
+                <div class="formula-display">P = 0.24·S + 0.21·I + 0.20·R + 0.18·T + 0.17·E</div>
                 <div style="font-size: 0.85rem; color: #c7d2fe; margin-top: 0.4rem;">
-                  Xác định thứ tự ưu tiên xử lý khách quan dựa trên trọng số xác lập từ khảo sát.
+                  Xác định thứ tự ưu tiên xử lý khách quan dựa trên trọng số chuẩn hóa từ <strong>324 phiếu khảo sát thực tế</strong> (AHP, CR = 0.71%).
                 </div>
               </div>
-              <div style="text-align: right;">
+              <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem;">
                 <span id="weight-sum-badge" class="badge" style="background: #10b981; color: #ffffff; font-size: 0.95rem; padding: 0.5rem 1rem;">
                   Tổng: <strong id="weight-sum-display">1.00</strong>
                 </span>
+                <button type="button" class="btn btn-sm" onclick="resetToSurveyWeights()" style="background: rgba(255,255,255,0.2); color: #ffffff; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.3); padding: 0.25rem 0.6rem; border-radius: 4px; cursor: pointer;">
+                  🔄 Đặt lại chuẩn AHP (324 mẫu)
+                </button>
               </div>
             </div>
 
@@ -351,11 +354,11 @@
                 <div class="slider-header">
                   <div>
                     <strong>w₁: Mức độ nghiêm trọng của hư hỏng (Severity - S)</strong>
-                    <div style="font-size: 0.8rem; color: #64748b;">Thang điểm 1 đến 5 đánh giá mức độ hỏng hóc vật lý</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">Khảo sát thực tế: 23.91% | Thang điểm 1 đến 5 đánh giá mức độ hỏng hóc vật lý</div>
                   </div>
-                  <span class="slider-val-badge" id="val-w1">0.30</span>
+                  <span class="slider-val-badge" id="val-w1">0.24</span>
                 </div>
-                <input type="range" id="input-w1" min="0" max="1" step="0.05" value="0.30" oninput="updateWeightsUI()">
+                <input type="range" id="input-w1" min="0" max="1" step="0.01" value="0.24" oninput="updateWeightsUI()">
               </div>
 
               <!-- w2 -->
@@ -363,11 +366,11 @@
                 <div class="slider-header">
                   <div>
                     <strong>w₂: Số người bị ảnh hưởng (Impact - I)</strong>
-                    <div style="font-size: 0.8rem; color: #64748b;">Chuẩn hóa số người tiếp xúc về thang 1-5 (1 cá nhân → 200+ công cộng)</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">Khảo sát thực tế: 21.24% | Chuẩn hóa số người tiếp xúc về thang 1-5 (1 cá nhân → 200+ công cộng)</div>
                   </div>
-                  <span class="slider-val-badge" id="val-w2">0.20</span>
+                  <span class="slider-val-badge" id="val-w2">0.21</span>
                 </div>
-                <input type="range" id="input-w2" min="0" max="1" step="0.05" value="0.20" oninput="updateWeightsUI()">
+                <input type="range" id="input-w2" min="0" max="1" step="0.01" value="0.21" oninput="updateWeightsUI()">
               </div>
 
               <!-- w3 -->
@@ -375,11 +378,11 @@
                 <div class="slider-header">
                   <div>
                     <strong>w₃: Mức độ rủi ro của khu vực (Risk - R)</strong>
-                    <div style="font-size: 0.8rem; color: #64748b;">Mức độ an toàn của địa điểm (Phòng học thường = 2, Phòng Hóa/Điện = 5)</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">Khảo sát thực tế: 19.85% | Mức độ an toàn vị trí (Phòng học = 2, Phòng Hóa/Điện = 5)</div>
                   </div>
                   <span class="slider-val-badge" id="val-w3">0.20</span>
                 </div>
-                <input type="range" id="input-w3" min="0" max="1" step="0.05" value="0.20" oninput="updateWeightsUI()">
+                <input type="range" id="input-w3" min="0" max="1" step="0.01" value="0.20" oninput="updateWeightsUI()">
               </div>
 
               <!-- w4 -->
@@ -387,11 +390,11 @@
                 <div class="slider-header">
                   <div>
                     <strong>w₄: Thời gian đã chờ xử lý (Time - T)</strong>
-                    <div style="font-size: 0.8rem; color: #64748b;">Sự cố tồn tại càng lâu càng tăng ưu tiên để chống bỏ sót</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">Khảo sát thực tế: 18.09% | Sự cố tồn tại càng lâu càng tăng ưu tiên để chống bỏ sót</div>
                   </div>
-                  <span class="slider-val-badge" id="val-w4">0.15</span>
+                  <span class="slider-val-badge" id="val-w4">0.18</span>
                 </div>
-                <input type="range" id="input-w4" min="0" max="1" step="0.05" value="0.15" oninput="updateWeightsUI()">
+                <input type="range" id="input-w4" min="0" max="1" step="0.01" value="0.18" oninput="updateWeightsUI()">
               </div>
 
               <!-- w5 -->
@@ -399,11 +402,11 @@
                 <div class="slider-header">
                   <div>
                     <strong>w₅: Tác động đến dạy & học (Education - E)</strong>
-                    <div style="font-size: 0.8rem; color: #64748b;">Mức độ ảnh hưởng trực tiếp đến bài giảng và tiết học của giáo viên</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">Khảo sát thực tế: 16.92% | Mức độ ảnh hưởng trực tiếp đến bài giảng và tiết học</div>
                   </div>
-                  <span class="slider-val-badge" id="val-w5">0.15</span>
+                  <span class="slider-val-badge" id="val-w5">0.17</span>
                 </div>
-                <input type="range" id="input-w5" min="0" max="1" step="0.05" value="0.15" oninput="updateWeightsUI()">
+                <input type="range" id="input-w5" min="0" max="1" step="0.01" value="0.17" oninput="updateWeightsUI()">
               </div>
 
               <!-- BỘ GIẢ LẬP TƯƠNG TÁC THỜI GIAN THỰC (REALTIME SIMULATOR) -->
@@ -457,15 +460,15 @@
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
                   <div style="display: flex; align-items: center; gap: 0.5rem;">
                     <span style="font-size: 1.2rem;">📐</span>
-                    <strong style="font-size: 0.95rem; color: #0f172a;">Cơ Sở Khoa Học: Ma Trận So Sánh Cặp AHP (Thomas L. Saaty)</strong>
+                    <strong style="font-size: 0.95rem; color: #0f172a;">Cơ Sở Khoa Học Thực Nghiệm: Ma Trận AHP (324 Mẫu Khảo Sát)</strong>
                   </div>
                   <span class="badge badge-success" style="font-size: 0.8rem; padding: 0.35rem 0.65rem;">
-                    Độ Nhất Quán CR = 0.042 &lt; 0.1 (Hợp Chuẩn)
+                    Độ Nhất Quán CR = 0.0071 (0.71%) &lt; 10% (Cực Kỳ Nhất Quán)
                   </span>
                 </div>
                 <p style="font-size: 0.825rem; color: #475569; line-height: 1.5;">
-                  Bộ trọng số mặc định được xác lập dựa trên phương pháp phân tích thứ bậc AHP với ma trận so sánh cặp giữa 5 tiêu chí: 
-                  <strong>S (0.30)</strong> &gt; <strong>I (0.20)</strong> = <strong>R (0.20)</strong> &gt; <strong>T (0.15)</strong> = <strong>E (0.15)</strong>.
+                  Bộ trọng số mặc định được tính toán từ trung bình hình học ma trận so sánh cặp giữa 5 tiêu chí của <strong>324 học sinh thực tế</strong>: 
+                  <strong>S (0.24)</strong> &gt; <strong>I (0.21)</strong> &gt; <strong>R (0.20)</strong> &gt; <strong>T (0.18)</strong> &gt; <strong>E (0.17)</strong>.
                 </p>
                 <div class="table-responsive" style="margin-top: 0.75rem;">
                   <table class="table" style="font-size: 0.8rem; background: #ffffff; text-align: center;">
@@ -477,30 +480,30 @@
                         <th>R (Rủi ro vị trí)</th>
                         <th>T (Thời gian chờ)</th>
                         <th>E (Tác động học)</th>
-                        <th>Vector Riêng (w)</th>
+                        <th>Trọng Số AHP (w)</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td><strong>S</strong></td><td>1.00</td><td>1.50</td><td>1.50</td><td>2.00</td><td>2.00</td><td style="font-weight: 800; color: #2563eb;">0.30</td>
+                        <td><strong>S</strong></td><td>1.000</td><td>1.350</td><td>1.238</td><td>1.277</td><td>1.189</td><td style="font-weight: 800; color: #2563eb;">0.24 (23.91%)</td>
                       </tr>
                       <tr>
-                        <td><strong>I</strong></td><td>0.67</td><td>1.00</td><td>1.00</td><td>1.33</td><td>1.33</td><td style="font-weight: 800; color: #2563eb;">0.20</td>
+                        <td><strong>I</strong></td><td>0.741</td><td>1.000</td><td>1.292</td><td>1.229</td><td>1.190</td><td style="font-weight: 800; color: #2563eb;">0.21 (21.24%)</td>
                       </tr>
                       <tr>
-                        <td><strong>R</strong></td><td>0.67</td><td>1.00</td><td>1.00</td><td>1.33</td><td>1.33</td><td style="font-weight: 800; color: #2563eb;">0.20</td>
+                        <td><strong>R</strong></td><td>0.808</td><td>0.774</td><td>1.000</td><td>1.274</td><td>1.253</td><td style="font-weight: 800; color: #2563eb;">0.20 (19.85%)</td>
                       </tr>
                       <tr>
-                        <td><strong>T</strong></td><td>0.50</td><td>0.75</td><td>0.75</td><td>1.00</td><td>1.00</td><td style="font-weight: 800; color: #2563eb;">0.15</td>
+                        <td><strong>T</strong></td><td>0.783</td><td>0.814</td><td>0.785</td><td>1.000</td><td>1.257</td><td style="font-weight: 800; color: #2563eb;">0.18 (18.09%)</td>
                       </tr>
                       <tr>
-                        <td><strong>E</strong></td><td>0.50</td><td>0.75</td><td>0.75</td><td>1.00</td><td>1.00</td><td style="font-weight: 800; color: #2563eb;">0.15</td>
+                        <td><strong>E</strong></td><td>0.841</td><td>0.840</td><td>0.798</td><td>0.796</td><td>1.000</td><td style="font-weight: 800; color: #2563eb;">0.17 (16.92%)</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
                 <div style="font-size: 0.775rem; color: #64748b; margin-top: 0.5rem;">
-                  * Giá trị riêng cực đại: &lambda;<sub>max</sub> = 5.188 | Chỉ số nhất quán: CI = 0.047 | Với n = 5 (RI = 1.12) &rArr; <strong>Tỉ số nhất quán CR = CI / RI = 0.042 &lt; 0.1</strong> chứng minh ma trận có tính logic khoa học vững chắc, không mâu thuẫn.
+                  * Giá trị riêng cực đại: &lambda;<sub>max</sub> = 5.0317 | Chỉ số nhất quán: CI = 0.0079 | Với n = 5 (RI = 1.12) &rArr; <strong>Tỉ số nhất quán CR = CI / RI = 0.0071 (0.71%) &lt; 10%</strong> đạt chuẩn mực quốc tế của lý thuyết Saaty, chứng minh kết quả khảo sát hoàn toàn logic, khoa học và không có mâu thuẫn cảm tính.
                 </div>
               </div>
 
@@ -1232,6 +1235,16 @@
     }
 
     // 3. Weights & Simulator
+    function resetToSurveyWeights() {
+      document.getElementById('input-w1').value = 0.24;
+      document.getElementById('input-w2').value = 0.21;
+      document.getElementById('input-w3').value = 0.20;
+      document.getElementById('input-w4').value = 0.18;
+      document.getElementById('input-w5').value = 0.17;
+      updateWeightsUI();
+      Toast.info("Đã khôi phục bộ trọng số chuẩn AHP từ 324 mẫu khảo sát thực tế!");
+    }
+
     async function loadWeights() {
       try {
         const res = await ApiService.getWeights();

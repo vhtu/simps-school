@@ -15,8 +15,8 @@ Quy tắc ghi đè an toàn (Safety Override):
     Nếu location.risk_level >= 5 HOẶC incident_type.is_safety_critical = True:
     → priority_level = "emergency", score = 999
 
-Trọng số mặc định (từ khảo sát):
-    w1=0.30, w2=0.20, w3=0.20, w4=0.15, w5=0.15
+Trọng số mặc định (từ 324 mẫu khảo sát thực tế AHP, CR = 0.71%):
+    w1=0.24, w2=0.21, w3=0.20, w4=0.18, w5=0.17
 
 Ngưỡng phân loại:
     emergency = override (ghi đè)
